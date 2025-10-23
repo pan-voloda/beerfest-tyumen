@@ -1,13 +1,15 @@
-// Language switcher & content binding
 (function () {
   const LANG_KEY = "beerfest_lang";
-  const langBtns = document.querySelectorAll(".lang-switch button");
+  const langButtons = document.querySelectorAll(".lang-switch button");
 
-  const applyTextContent = (lang) => {
+  const applyContent = (lang) => {
     document.querySelectorAll("[data-ru][data-en]").forEach((el) => {
-      const text = lang === "en" ? el.getAttribute("data-en") : el.getAttribute("data-ru");
-      if (text !== null) {
-        el.textContent = text;
+      const value = lang === "en" ? el.dataset.en : el.dataset.ru;
+      if (value !== undefined) {
+        if (el.tagName === "INPUT" || el.tagName === "TEXTAREA" || el.tagName === "SELECT") {
+          return;
+        }
+        el.textContent = value;
       }
     });
 
@@ -41,45 +43,51 @@
         el.setAttribute("content", value);
       }
     });
+
+    document.querySelectorAll("select option[data-ru][data-en]").forEach((option) => {
+      const value = lang === "en" ? option.dataset.en : option.dataset.ru;
+      if (value !== undefined) {
+        option.textContent = value;
+      }
+    });
   };
 
-  const setLang = (lang) => {
+  const setLanguage = (lang) => {
     const normalized = lang === "en" ? "en" : "ru";
     document.documentElement.setAttribute("lang", normalized);
-    langBtns.forEach((btn) => btn.classList.toggle("active", btn.dataset.lang === normalized));
-    applyTextContent(normalized);
+    langButtons.forEach((btn) => {
+      btn.classList.toggle("active", btn.dataset.lang === normalized);
+    });
+    applyContent(normalized);
     localStorage.setItem(LANG_KEY, normalized);
     document.dispatchEvent(new CustomEvent("beerfest:lang-change", { detail: normalized }));
   };
 
-  langBtns.forEach((btn) => {
-    btn.addEventListener("click", () => setLang(btn.dataset.lang));
+  langButtons.forEach((btn) => {
+    btn.addEventListener("click", () => setLanguage(btn.dataset.lang));
   });
 
-  setLang(localStorage.getItem(LANG_KEY) || "ru");
+  setLanguage(localStorage.getItem(LANG_KEY) || "ru");
 })();
 
-// Mobile navigation toggle
 (function () {
-  const nav = document.getElementById("primary-nav");
+  const nav = document.querySelector(".nav");
   const toggle = document.querySelector(".nav-toggle");
   if (!nav || !toggle) return;
   const srLabel = toggle.querySelector(".sr-only");
 
-  const getLang = () => (document.documentElement.getAttribute("lang") === "en" ? "en" : "ru");
+  const currentLang = () => (document.documentElement.getAttribute("lang") === "en" ? "en" : "ru");
 
-  const setToggleLabel = (state) => {
-    const lang = getLang();
+  const setToggleLabels = (state) => {
+    const lang = currentLang();
     const openLabel = lang === "en" ? toggle.dataset.enAriaLabel : toggle.dataset.ruAriaLabel;
     const closeLabel = lang === "en" ? toggle.dataset.enAriaLabelClose : toggle.dataset.ruAriaLabelClose;
-    const label = state === "close" ? closeLabel : openLabel;
-    if (label) {
-      toggle.setAttribute("aria-label", label);
-    }
+    const openText = srLabel ? (lang === "en" ? srLabel.dataset.en : srLabel.dataset.ru) : "";
+    const closeText = srLabel ? (lang === "en" ? srLabel.dataset.enClose : srLabel.dataset.ruClose) : "";
+
+    toggle.setAttribute("aria-label", state === "close" ? closeLabel : openLabel);
     if (srLabel) {
-      const openText = lang === "en" ? srLabel.dataset.en : srLabel.dataset.ru;
-      const closeText = lang === "en" ? srLabel.dataset.enClose : srLabel.dataset.ruClose;
-      srLabel.textContent = state === "close" && closeText ? closeText : openText || "";
+      srLabel.textContent = state === "close" ? closeText : openText;
     }
   };
 
@@ -87,14 +95,14 @@
     nav.classList.remove("open");
     toggle.classList.remove("nav-open");
     toggle.setAttribute("aria-expanded", "false");
-    setToggleLabel("open");
+    setToggleLabels("open");
   };
 
   const openNav = () => {
     nav.classList.add("open");
     toggle.classList.add("nav-open");
     toggle.setAttribute("aria-expanded", "true");
-    setToggleLabel("close");
+    setToggleLabels("close");
   };
 
   toggle.addEventListener("click", () => {
@@ -107,27 +115,26 @@
 
   nav.querySelectorAll("a").forEach((link) => link.addEventListener("click", closeNav));
 
+  window.addEventListener("resize", () => {
+    if (window.innerWidth > 960) {
+      closeNav();
+    }
+  });
+
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape") {
       closeNav();
     }
   });
 
-  window.addEventListener("resize", () => {
-    if (window.innerWidth > 900) {
-      closeNav();
-    }
-  });
-
   document.addEventListener("beerfest:lang-change", () => {
     const state = nav.classList.contains("open") ? "close" : "open";
-    setToggleLabel(state);
+    setToggleLabels(state);
   });
 
-  setToggleLabel("open");
+  setToggleLabels("open");
 })();
 
-// Active navigation state based on scroll position
 (function () {
   const navLinks = Array.from(document.querySelectorAll(".nav a[href^='#']"));
   if (!navLinks.length) return;
@@ -142,9 +149,7 @@
     })
     .filter(Boolean);
 
-  if (!sections.length) return;
-
-  const setActiveLink = (activeLink) => {
+  const setActive = (activeLink) => {
     sections.forEach(({ link }) => {
       const isActive = link === activeLink;
       link.classList.toggle("is-active", isActive);
@@ -157,255 +162,433 @@
   };
 
   if (typeof IntersectionObserver !== "function") {
-    setActiveLink(sections[0].link);
+    setActive(sections[0]?.link);
     return;
   }
 
   const observer = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          const match = sections.find((item) => item.target === entry.target);
-          if (match) {
-            setActiveLink(match.link);
-          }
+        if (!entry.isIntersecting) return;
+        const match = sections.find((item) => item.target === entry.target);
+        if (match) {
+          setActive(match.link);
         }
       });
     },
-    { rootMargin: "-55% 0px -40% 0px", threshold: 0 }
+    { rootMargin: "-55% 0px -35% 0px", threshold: 0 }
   );
 
   sections.forEach(({ target }) => observer.observe(target));
-
-  navLinks.forEach((link) => {
-    link.addEventListener("click", () => {
-      setActiveLink(link);
-    });
-  });
-
-  setActiveLink(sections[0].link);
 })();
 
-// Reveal on scroll (gallery images)
 (function () {
-  const images = document.querySelectorAll(".gallery img");
-  if (!images.length) return;
+  const galleryImages = document.querySelectorAll(".gallery-grid img");
+  if (!galleryImages.length) return;
 
   const mediaQuery = window.matchMedia ? window.matchMedia("(prefers-reduced-motion: reduce)") : null;
 
-  const revealImmediately = () => {
-    images.forEach((img) => img.classList.add("visible"));
-  };
-
   if (mediaQuery?.matches) {
-    revealImmediately();
+    galleryImages.forEach((img) => img.classList.add("visible"));
     return;
   }
 
-  if (typeof IntersectionObserver !== "function") {
-    revealImmediately();
-    return;
-  }
-
-  const obs = new IntersectionObserver(
-    (entries, observer) => {
+  const observer = new IntersectionObserver(
+    (entries, obs) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           entry.target.classList.add("visible");
-          observer.unobserve(entry.target);
+          obs.unobserve(entry.target);
         }
       });
     },
     { threshold: 0.2 }
   );
 
-  images.forEach((img) => obs.observe(img));
-
-  const handleMotionChange = (event) => {
-    if (event.matches) {
-      obs.disconnect();
-      revealImmediately();
-    }
-  };
-
-  mediaQuery?.addEventListener?.("change", handleMotionChange);
-  mediaQuery?.addListener?.(handleMotionChange);
+  galleryImages.forEach((img) => observer.observe(img));
 })();
 
-// Simple lightbox
 (function () {
-  const lb = document.getElementById("lightbox");
-  if (!lb) return;
-  const lbImg = lb.querySelector("img");
-  const closeBtn = lb.querySelector(".close");
-  const close = () => {
-    lb.classList.remove("open");
-    lb.setAttribute("aria-hidden", "true");
-    if (lbImg) {
-      lbImg.removeAttribute("src");
-      lbImg.removeAttribute("alt");
-    }
+  const filterButtons = document.querySelectorAll("[data-program-filter]");
+  const items = document.querySelectorAll("[data-program-list] article");
+  if (!filterButtons.length || !items.length) return;
+
+  const applyFilter = (category) => {
+    items.forEach((item) => {
+      const match = category === "all" || item.dataset.category === category;
+      item.hidden = !match;
+    });
   };
 
-  document.querySelectorAll(".gallery img").forEach((img) => {
-    img.addEventListener("click", () => {
-      if (!lbImg) return;
-      lbImg.src = img.src;
-      lbImg.alt = img.alt || "";
-      lb.classList.add("open");
-      lb.setAttribute("aria-hidden", "false");
+  filterButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      filterButtons.forEach((btn) => btn.classList.toggle("active", btn === button));
+      applyFilter(button.dataset.programFilter || "all");
     });
   });
-
-  if (closeBtn) {
-    closeBtn.addEventListener("click", close);
-  }
-  lb.addEventListener("click", (event) => {
-    if (event.target === lb) {
-      close();
-    }
-  });
-  document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") {
-      close();
-    }
-  });
 })();
 
-// Contact form handling
 (function () {
-  const form = document.querySelector(".contact-form");
-  if (!form) return;
-  const statusEl = form.querySelector(".form-status");
-  const requiredFields = Array.from(form.querySelectorAll("input[required], textarea[required]"));
-  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/i;
+  const link = document.querySelector('[data-calendar-download]:not([data-booking-ics])');
+  if (!link) return;
 
-  const getLang = () => (document.documentElement.getAttribute("lang") === "en" ? "en" : "ru");
+  const programEvents = [
+    {
+      id: "opening-day",
+      start: "2025-09-20T09:00:00+05:00",
+      end: "2025-09-20T22:00:00+05:00",
+      ru: {
+        summary: "BeerFest Tyumen — День открытия",
+        description: "Оркестр, парад пивоваров, специальные релизы и живая музыка.",
+      },
+      en: {
+        summary: "BeerFest Tyumen — Opening Day",
+        description: "Brass band, brewers' parade, special releases and live music.",
+      },
+    },
+    {
+      id: "education-saturday",
+      start: "2025-09-27T10:00:00+05:00",
+      end: "2025-09-27T21:00:00+05:00",
+      ru: {
+        summary: "BeerFest Tyumen — Образовательная суббота",
+        description: "Лекции TU München, панель о безалкогольном пиве и сенсорный практикум.",
+      },
+      en: {
+        summary: "BeerFest Tyumen — Education Saturday",
+        description: "TU München lectures, low & no alcohol panel and sensory lab.",
+      },
+    },
+    {
+      id: "tasting-weekend",
+      start: "2025-10-04T11:00:00+05:00",
+      end: "2025-10-04T22:30:00+05:00",
+      ru: {
+        summary: "BeerFest Tyumen — Дегустационный уикенд",
+        description: "Слепые дегустации, pop-up кухни и Tyumen Jazz Collective вечером.",
+      },
+      en: {
+        summary: "BeerFest Tyumen — Tasting weekend",
+        description: "Blind tastings, pop-up kitchens and Tyumen Jazz Collective at night.",
+      },
+    },
+  ];
 
-  const getErrorElement = (field) => field.closest(".form-field")?.querySelector(".error-message");
+  const generateICS = () => {
+    const lang = document.documentElement.getAttribute("lang") === "en" ? "en" : "ru";
+    const lines = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//BeerFest Tyumen//Program//RU"];
 
-  const getMessageKey = (type, lang) => {
-    if (type === "invalid") {
-      return lang === "en" ? "enInvalid" : "ruInvalid";
-    }
-    return lang === "en" ? "enRequired" : "ruRequired";
+    programEvents.forEach((event) => {
+      const start = new Date(event.start).toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
+      const end = new Date(event.end).toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
+      const details = event[lang];
+      lines.push("BEGIN:VEVENT");
+      lines.push(`UID:${event.id}@beerfest-tyumen`);
+      lines.push(`DTSTAMP:${new Date().toISOString().replace(/[-:]/g, "").split(".")[0]}Z`);
+      lines.push(`DTSTART:${start}`);
+      lines.push(`DTEND:${end}`);
+      lines.push(`SUMMARY:${details.summary}`);
+      lines.push(`DESCRIPTION:${details.description}`);
+      lines.push("LOCATION:City Exhibition Center, Tyumen");
+      lines.push("END:VEVENT");
+    });
+
+    lines.push("END:VCALENDAR");
+    return new Blob([lines.join("\r\n")], { type: "text/calendar" });
   };
 
-  const applyErrorMessage = (errorEl, type, lang) => {
-    if (!errorEl) return;
-    const key = getMessageKey(type, lang);
-    const fallbackKey = getMessageKey("required", lang);
-    errorEl.textContent = errorEl.dataset[key] || errorEl.dataset[fallbackKey] || "";
-  };
-
-  const setFieldError = (field, type) => {
-    const lang = getLang();
-    const errorEl = getErrorElement(field);
-    field.classList.add("invalid");
-    field.setAttribute("aria-invalid", "true");
-    if (errorEl) {
-      errorEl.dataset.state = type;
-      applyErrorMessage(errorEl, type, lang);
-    }
-  };
-
-  const clearFieldError = (field) => {
-    const errorEl = getErrorElement(field);
-    field.classList.remove("invalid");
-    field.removeAttribute("aria-invalid");
-    if (errorEl) {
-      delete errorEl.dataset.state;
-      errorEl.textContent = "";
-    }
-  };
-
-  const validateField = (field) => {
-    const value = field.value.trim();
-    if (!value) {
-      return { valid: false, type: "required" };
-    }
-    if (field.type === "email" && !emailPattern.test(value)) {
-      return { valid: false, type: "invalid" };
-    }
-    return { valid: true };
-  };
-
-  const updateStatus = (type) => {
-    if (!statusEl) return;
-    const lang = getLang();
-    if (type === "clear") {
-      statusEl.classList.remove("error");
-      statusEl.textContent = "";
-      delete statusEl.dataset.state;
-      return;
-    }
-
-    statusEl.dataset.state = type;
-    if (type === "error") {
-      statusEl.classList.add("error");
-      statusEl.textContent = lang === "en" ? statusEl.dataset.enError : statusEl.dataset.ruError;
-    } else if (type === "success") {
-      statusEl.classList.remove("error");
-      statusEl.textContent = lang === "en" ? statusEl.dataset.enSuccess : statusEl.dataset.ruSuccess;
-    }
-  };
-
-  form.addEventListener("submit", (event) => {
+  link.addEventListener("click", (event) => {
     event.preventDefault();
-    let hasError = false;
+    const blob = generateICS();
+    const url = URL.createObjectURL(blob);
+    const temp = document.createElement("a");
+    temp.href = url;
+    temp.download = "beerfest-program.ics";
+    temp.rel = "noopener";
+    temp.click();
+    setTimeout(() => URL.revokeObjectURL(url), 2000);
+  });
+})();
 
-    requiredFields.forEach((field) => {
-      const result = validateField(field);
-      if (!result.valid) {
-        setFieldError(field, result.type);
-        hasError = true;
-      } else {
-        clearFieldError(field);
-      }
+(function () {
+  const modal = document.querySelector("[data-booking-modal]");
+  if (!modal) return;
+
+  const steps = Array.from(modal.querySelectorAll(".booking-step"));
+  const summaryBox = modal.querySelector("[data-booking-summary]");
+  const submitBtn = modal.querySelector("[data-booking-submit]");
+  const feedback = modal.querySelector(".booking-feedback");
+  const icsLink = modal.querySelector("[data-booking-ics]");
+
+  const ticketMap = {
+    single: {
+      price: 1500,
+      ru: { name: "Однодневный", description: "Вход на все зоны" },
+      en: { name: "Single day", description: "Access to all areas" },
+    },
+    weekend: {
+      price: 3900,
+      ru: { name: "Уикенд-пас", description: "Два дня подряд" },
+      en: { name: "Weekend pass", description: "Two consecutive days" },
+    },
+    premium: {
+      price: 7500,
+      ru: { name: "Премиум индустрия", description: "Backstage и B2B" },
+      en: { name: "Premium industry", description: "Backstage & B2B" },
+    },
+  };
+
+  const translations = {
+    ru: {
+      ticket: "Тариф",
+      guests: "Гостей",
+      date: "Дата",
+      contact: "Контакты",
+      phone: "Телефон",
+      comment: "Комментарий",
+      total: "Сумма",
+    },
+    en: {
+      ticket: "Pass",
+      guests: "Guests",
+      date: "Date",
+      contact: "Contact",
+      phone: "Phone",
+      comment: "Comment",
+      total: "Total",
+    },
+  };
+
+  let currentStep = 0;
+  let bookingData = {};
+
+  const openModal = (prefill) => {
+    modal.classList.add("is-open");
+    modal.setAttribute("aria-hidden", "false");
+    document.body.style.overflow = "hidden";
+    steps.forEach((step, index) => step.classList.toggle("active", index === 0));
+    currentStep = 0;
+    bookingData = {
+      ticket: prefill?.ticket || "single",
+      quantity: prefill?.quantity ? String(prefill.quantity) : "1",
+    };
+    feedback.dataset.state = "";
+    feedback.textContent = "";
+    submitBtn.disabled = false;
+    icsLink.hidden = true;
+    const form1 = modal.querySelector('[data-booking-form-step="1"]');
+    form1.reset();
+    form1.ticket.value = bookingData.ticket;
+    form1.quantity.value = bookingData.quantity;
+    const today = new Date().toISOString().split("T")[0];
+    form1.visitDate.min = today;
+  };
+
+  const closeModal = () => {
+    modal.classList.remove("is-open");
+    modal.setAttribute("aria-hidden", "true");
+    document.body.style.overflow = "";
+  };
+
+  modal.querySelectorAll("[data-booking-close]").forEach((btn) => btn.addEventListener("click", closeModal));
+  modal.addEventListener("click", (event) => {
+    if (event.target === modal) {
+      closeModal();
+    }
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && modal.classList.contains("is-open")) {
+      closeModal();
+    }
+  });
+
+  document.querySelectorAll("[data-booking-open]").forEach((trigger) => {
+    trigger.addEventListener("click", () => {
+      const card = trigger.closest("[data-ticket-card]");
+      const quantityInput = card?.querySelector("[data-ticket-qty]");
+      const quantity = quantityInput ? Number(quantityInput.value) || 1 : 1;
+      openModal({
+        ticket: trigger.dataset.ticketType || "single",
+        quantity,
+      });
     });
+  });
 
-    if (hasError) {
-      updateStatus("error");
+  modal.querySelectorAll("[data-booking-prev]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      if (currentStep === 0) return;
+      steps[currentStep].classList.remove("active");
+      currentStep -= 1;
+      steps[currentStep].classList.add("active");
+    });
+  });
+
+  const showSummary = () => {
+    const lang = document.documentElement.getAttribute("lang") === "en" ? "en" : "ru";
+    const labels = translations[lang];
+    const ticket = ticketMap[bookingData.ticket] || ticketMap.single;
+    const total = ticket.price * (Number(bookingData.quantity) || 1);
+    const date = bookingData.visitDate ? new Date(bookingData.visitDate) : null;
+    const dateFormatted = date
+      ? date.toLocaleDateString(lang === "ru" ? "ru-RU" : "en-GB", {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+        })
+      : "";
+
+    summaryBox.innerHTML = `
+      <div><strong>${labels.ticket}:</strong> ${ticket[lang].name}</div>
+      <div><strong>${labels.guests}:</strong> ${bookingData.quantity}</div>
+      <div><strong>${labels.date}:</strong> ${dateFormatted}</div>
+      <div><strong>${labels.contact}:</strong> ${bookingData.fullName} — ${bookingData.email}</div>
+      <div><strong>${labels.phone}:</strong> ${bookingData.phone}</div>
+      <div><strong>${labels.comment}:</strong> ${bookingData.comment || "—"}</div>
+      <div><strong>${labels.total}:</strong> ${total.toLocaleString(lang === "ru" ? "ru-RU" : "en-US", { style: "currency", currency: "RUB" })}</div>
+    `;
+  };
+
+  const form1 = modal.querySelector('[data-booking-form-step="1"]');
+  const form2 = modal.querySelector('[data-booking-form-step="2"]');
+
+  form1.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const data = new FormData(form1);
+    bookingData.ticket = data.get("ticket") || "single";
+    bookingData.quantity = data.get("quantity") || "1";
+    bookingData.visitDate = data.get("visitDate") || "";
+    steps[currentStep].classList.remove("active");
+    currentStep = 1;
+    steps[currentStep].classList.add("active");
+  });
+
+  form2.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const data = new FormData(form2);
+    bookingData.fullName = data.get("fullName") || "";
+    bookingData.email = data.get("email") || "";
+    bookingData.phone = data.get("phone") || "";
+    bookingData.comment = data.get("comment") || "";
+    steps[currentStep].classList.remove("active");
+    currentStep = 2;
+    steps[currentStep].classList.add("active");
+    showSummary();
+  });
+
+  const createICS = () => {
+    const lang = document.documentElement.getAttribute("lang") === "en" ? "en" : "ru";
+    const ticket = ticketMap[bookingData.ticket] || ticketMap.single;
+    if (!bookingData.visitDate) return null;
+    const start = new Date(`${bookingData.visitDate}T10:00:00+05:00`);
+    const end = new Date(`${bookingData.visitDate}T18:00:00+05:00`);
+    const formatDate = (date) => date.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
+    const lines = [
+      "BEGIN:VCALENDAR",
+      "VERSION:2.0",
+      "PRODID:-//BeerFest Tyumen//Booking//RU",
+      "BEGIN:VEVENT",
+      `UID:booking-${Date.now()}@beerfest-tyumen`,
+      `DTSTAMP:${formatDate(new Date())}`,
+      `DTSTART:${formatDate(start)}`,
+      `DTEND:${formatDate(end)}`,
+      `SUMMARY:${lang === "ru" ? "Бронирование BeerFest Tyumen" : "BeerFest Tyumen booking"}`,
+      `DESCRIPTION:${ticket[lang].name} — ${bookingData.quantity} ${lang === "ru" ? "гостей" : "guest(s)"}`,
+      "LOCATION:City Exhibition Center, Tyumen",
+      "END:VEVENT",
+      "END:VCALENDAR",
+    ];
+    return new Blob([lines.join("\r\n")], { type: "text/calendar" });
+  };
+
+  submitBtn.addEventListener("click", async () => {
+    submitBtn.disabled = true;
+    feedback.dataset.state = "";
+    feedback.textContent = "";
+
+    const payload = {
+      ...bookingData,
+      ticketName: ticketMap[bookingData.ticket]?.ru?.name || bookingData.ticket,
+      createdAt: new Date().toISOString(),
+    };
+
+    try {
+      const response = await fetch("https://jsonplaceholder.typicode.com/posts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        throw new Error("Request failed");
+      }
+
+      const blob = createICS();
+      if (blob && icsLink) {
+        const url = URL.createObjectURL(blob);
+        icsLink.href = url;
+        icsLink.hidden = false;
+        setTimeout(() => URL.revokeObjectURL(url), 120000);
+      }
+
+      feedback.dataset.state = "success";
+      const lang = document.documentElement.getAttribute("lang") === "en" ? "en" : "ru";
+      feedback.textContent = lang === "en" ? feedback.dataset.enSuccess : feedback.dataset.ruSuccess;
+    } catch (error) {
+      feedback.dataset.state = "error";
+      const lang = document.documentElement.getAttribute("lang") === "en" ? "en" : "ru";
+      feedback.textContent = lang === "en" ? feedback.dataset.enError : feedback.dataset.ruError;
+      submitBtn.disabled = false;
       return;
     }
-
-    updateStatus("success");
-    form.reset();
-    requiredFields.forEach(clearFieldError);
-    setTimeout(() => updateStatus("clear"), 5000);
   });
+})();
 
-  requiredFields.forEach((field) => {
-    field.addEventListener("input", () => {
-      const result = validateField(field);
-      if (result.valid) {
-        clearFieldError(field);
-      } else if (field.classList.contains("invalid") || field.getAttribute("aria-invalid") === "true") {
-        setFieldError(field, result.type);
+(function () {
+  const form = document.querySelector("[data-newsletter]");
+  if (!form) return;
+  const feedback = form.querySelector(".form-feedback");
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    feedback.dataset.state = "";
+    feedback.textContent = "";
+
+    const data = Object.fromEntries(new FormData(form));
+
+    try {
+      const response = await fetch("https://jsonplaceholder.typicode.com/posts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...data, type: "newsletter" }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Request failed");
       }
-    });
 
-    field.addEventListener("blur", () => {
-      const result = validateField(field);
-      if (!result.valid) {
-        setFieldError(field, result.type);
-      } else {
-        clearFieldError(field);
-      }
-    });
-  });
-
-  document.addEventListener("beerfest:lang-change", () => {
-    const state = statusEl?.dataset.state;
-    if (state) {
-      updateStatus(state);
+      form.reset();
+      feedback.dataset.state = "success";
+      const lang = document.documentElement.getAttribute("lang") === "en" ? "en" : "ru";
+      feedback.textContent = lang === "en" ? feedback.dataset.enSuccess : feedback.dataset.ruSuccess;
+    } catch (error) {
+      feedback.dataset.state = "error";
+      const lang = document.documentElement.getAttribute("lang") === "en" ? "en" : "ru";
+      feedback.textContent = lang === "en" ? feedback.dataset.enError : feedback.dataset.ruError;
     }
-    requiredFields.forEach((field) => {
-      const errorEl = getErrorElement(field);
-      const errorState = errorEl?.dataset.state;
-      if (errorEl && errorState) {
-        applyErrorMessage(errorEl, errorState, getLang());
-      }
-    });
+  });
+})();
+
+(function () {
+  const widget = document.querySelector("[data-chat]");
+  if (!widget) return;
+  const toggle = widget.querySelector(".chat-widget__toggle");
+  const panel = widget.querySelector(".chat-widget__panel");
+  if (!toggle || !panel) return;
+
+  toggle.addEventListener("click", () => {
+    const expanded = toggle.getAttribute("aria-expanded") === "true";
+    toggle.setAttribute("aria-expanded", String(!expanded));
+    panel.hidden = expanded;
   });
 })();
