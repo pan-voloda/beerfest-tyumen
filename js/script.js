@@ -89,6 +89,91 @@
 })();
 
 /**
+ * Module: Theme toggle
+ * Provides a light/dark mode switch that respects system preferences,
+ * persists the user's choice and keeps labels translated.
+ */
+(function () {
+  const THEME_KEY = "beerfest_theme";
+  const toggle = document.querySelector("[data-theme-toggle]");
+  if (!toggle) return;
+
+  const labelEl = toggle.querySelector(".theme-toggle__label");
+  const metaTheme = document.querySelector("meta[name='theme-color']");
+  const prefersDark = typeof window.matchMedia === "function" ? window.matchMedia("(prefers-color-scheme: dark)") : null;
+  const META_COLORS = {
+    light: "#fbf5e7",
+    dark: "#1b1008",
+  };
+
+  let storedPreference = localStorage.getItem(THEME_KEY) || null;
+
+  const currentLang = () => (document.documentElement.getAttribute("lang") === "en" ? "en" : "ru");
+
+  const updateMetaColor = (theme) => {
+    if (!metaTheme) return;
+    metaTheme.setAttribute("content", META_COLORS[theme] || META_COLORS.light);
+  };
+
+  const updateLabels = (theme) => {
+    const lang = currentLang();
+    const datasetKey = `${lang}${theme === "dark" ? "Dark" : "Light"}`;
+    const actionLabel = toggle.dataset[datasetKey];
+    if (actionLabel) {
+      toggle.setAttribute("aria-label", actionLabel);
+      toggle.setAttribute("title", actionLabel);
+    }
+    if (labelEl) {
+      const textKey = `${datasetKey}Text`;
+      const labelText = labelEl.dataset[textKey];
+      if (labelText) {
+        labelEl.textContent = labelText;
+      }
+    }
+  };
+
+  const applyTheme = (theme, { persist = true } = {}) => {
+    const normalized = theme === "dark" ? "dark" : "light";
+    document.body.setAttribute("data-theme", normalized);
+    toggle.setAttribute("aria-pressed", normalized === "dark" ? "true" : "false");
+    updateLabels(normalized);
+    updateMetaColor(normalized);
+    if (persist) {
+      localStorage.setItem(THEME_KEY, normalized);
+      storedPreference = normalized;
+    }
+    document.dispatchEvent(new CustomEvent("beerfest:theme-change", { detail: normalized }));
+  };
+
+  const activeTheme = () => (document.body.getAttribute("data-theme") === "dark" ? "dark" : "light");
+
+  toggle.addEventListener("click", () => {
+    const next = activeTheme() === "dark" ? "light" : "dark";
+    applyTheme(next);
+  });
+
+  document.addEventListener("beerfest:lang-change", () => {
+    updateLabels(activeTheme());
+  });
+
+  if (prefersDark) {
+    const handlePreferenceChange = (event) => {
+      if (storedPreference) return;
+      applyTheme(event.matches ? "dark" : "light", { persist: false });
+    };
+
+    if (typeof prefersDark.addEventListener === "function") {
+      prefersDark.addEventListener("change", handlePreferenceChange);
+    } else if (typeof prefersDark.addListener === "function") {
+      prefersDark.addListener(handlePreferenceChange);
+    }
+  }
+
+  const initialTheme = storedPreference || (prefersDark && prefersDark.matches ? "dark" : "light");
+  applyTheme(initialTheme, { persist: Boolean(storedPreference) });
+})();
+
+/**
  * Module: Responsive navigation
  * Handles the hamburger button, ARIA labels and closing behaviour on breakpoints.
  */
@@ -371,6 +456,20 @@
   const feedback = modal.querySelector(".booking-feedback");
   const icsLink = modal.querySelector("[data-booking-ics]");
 
+  const getLanguage = () => (document.documentElement.getAttribute("lang") === "en" ? "en" : "ru");
+
+  const emailConfig = {
+    provider: (modal.dataset.emailProvider || "").trim(),
+    serviceId: (modal.dataset.emailService || "").trim(),
+    templateId: (modal.dataset.emailTemplate || "").trim(),
+    publicKey: (modal.dataset.emailPublicKey || "").trim(),
+    organizerEmail: (modal.dataset.emailOrganizer || "").trim(),
+  };
+
+  const emailServiceReady =
+    emailConfig.provider === "emailjs" &&
+    Boolean(emailConfig.serviceId && emailConfig.templateId && emailConfig.publicKey);
+
   const ticketMap = {
     single: {
       price: 1500,
@@ -479,7 +578,7 @@
 
   // Render a recap of the collected answers before submission.
   const showSummary = () => {
-    const lang = document.documentElement.getAttribute("lang") === "en" ? "en" : "ru";
+    const lang = getLanguage();
     const labels = translations[lang];
     const ticket = ticketMap[bookingData.ticket] || ticketMap.single;
     const total = ticket.price * (Number(bookingData.quantity) || 1);
@@ -532,7 +631,7 @@
 
   // Generate a personal ICS confirmation for the selected visit date.
   const createICS = () => {
-    const lang = document.documentElement.getAttribute("lang") === "en" ? "en" : "ru";
+    const lang = getLanguage();
     const ticket = ticketMap[bookingData.ticket] || ticketMap.single;
     if (!bookingData.visitDate) return null;
     const start = new Date(`${bookingData.visitDate}T10:00:00+05:00`);
@@ -556,6 +655,82 @@
     return new Blob([lines.join("\r\n")], { type: "text/calendar" });
   };
 
+  const getFeedbackMessage = (variant, lang) => {
+    if (!feedback) return "";
+    const dictionaries = {
+      en: {
+        success: feedback.dataset.enSuccess,
+        partial: feedback.dataset.enPartial || feedback.dataset.enSuccess,
+        error: feedback.dataset.enError,
+      },
+      ru: {
+        success: feedback.dataset.ruSuccess,
+        partial: feedback.dataset.ruPartial || feedback.dataset.ruSuccess,
+        error: feedback.dataset.ruError,
+      },
+    };
+
+    const lookup = dictionaries[lang] || dictionaries.ru;
+    return lookup?.[variant] || lookup?.success || "";
+  };
+
+  const sendConfirmationEmail = async ({ lang, ticket, icsText }) => {
+    if (!emailServiceReady) {
+      return { ok: false, reason: "not-configured" };
+    }
+
+    if (emailConfig.provider !== "emailjs") {
+      console.warn("Booking email: unsupported provider", emailConfig.provider);
+      return { ok: false, reason: "unsupported-provider" };
+    }
+
+    if (!bookingData.email) {
+      console.warn("Booking email: recipient email is missing");
+      return { ok: false, reason: "missing-recipient" };
+    }
+
+    const visitDate = bookingData.visitDate ? new Date(`${bookingData.visitDate}T00:00:00`) : null;
+    const visitDateHuman = visitDate
+      ? visitDate.toLocaleDateString(lang === "ru" ? "ru-RU" : "en-GB", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        })
+      : "";
+
+    const templateParams = {
+      to_email: bookingData.email,
+      to_name: bookingData.fullName || "",
+      ticket_name: ticket[lang].name,
+      ticket_description: ticket[lang].description,
+      guests: bookingData.quantity,
+      visit_date: visitDateHuman,
+      phone: bookingData.phone,
+      comment: bookingData.comment || "—",
+      organizer_email: emailConfig.organizerEmail,
+      locale: lang,
+      ics_text: icsText || "",
+    };
+
+    const response = await fetch("https://api.emailjs.com/api/v1.0/email/send", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        service_id: emailConfig.serviceId,
+        template_id: emailConfig.templateId,
+        user_id: emailConfig.publicKey,
+        template_params: templateParams,
+      }),
+    });
+
+    if (!response.ok) {
+      const message = await response.text();
+      throw new Error(message || "Email request failed");
+    }
+
+    return { ok: true };
+  };
+
   // Final submission posts a mock payload and surfaces success/error messages.
   submitBtn.addEventListener("click", async () => {
     submitBtn.disabled = true;
@@ -566,6 +741,7 @@
       ...bookingData,
       ticketName: ticketMap[bookingData.ticket]?.ru?.name || bookingData.ticket,
       createdAt: new Date().toISOString(),
+      emailIntegration: emailServiceReady ? emailConfig.provider : "disabled",
     };
 
     try {
@@ -579,21 +755,41 @@
         throw new Error("Request failed");
       }
 
+      const lang = getLanguage();
+      const ticket = ticketMap[bookingData.ticket] || ticketMap.single;
       const blob = createICS();
-      if (blob && icsLink) {
-        const url = URL.createObjectURL(blob);
-        icsLink.href = url;
-        icsLink.hidden = false;
-        setTimeout(() => URL.revokeObjectURL(url), 120000);
+      let icsText = "";
+
+      if (blob) {
+        if (icsLink) {
+          const url = URL.createObjectURL(blob);
+          icsLink.href = url;
+          icsLink.hidden = false;
+          setTimeout(() => URL.revokeObjectURL(url), 120000);
+        }
+
+        try {
+          icsText = await blob.text();
+        } catch (readError) {
+          console.warn("Booking email: unable to read ICS blob", readError);
+        }
+      } else if (icsLink) {
+        icsLink.hidden = true;
       }
 
+      const emailResult = await sendConfirmationEmail({ lang, ticket, icsText });
+      if (!emailResult.ok && emailResult.reason === "not-configured") {
+        console.info("Booking email: automation not configured. Provide EmailJS credentials to enable email sending.");
+      }
+
+      const messageVariant = emailResult.ok ? "success" : "partial";
       feedback.dataset.state = "success";
-      const lang = document.documentElement.getAttribute("lang") === "en" ? "en" : "ru";
-      feedback.textContent = lang === "en" ? feedback.dataset.enSuccess : feedback.dataset.ruSuccess;
+      feedback.textContent = getFeedbackMessage(messageVariant, lang);
     } catch (error) {
+      console.error("Booking submission failed", error);
       feedback.dataset.state = "error";
-      const lang = document.documentElement.getAttribute("lang") === "en" ? "en" : "ru";
-      feedback.textContent = lang === "en" ? feedback.dataset.enError : feedback.dataset.ruError;
+      const lang = getLanguage();
+      feedback.textContent = getFeedbackMessage("error", lang);
       submitBtn.disabled = false;
       return;
     }
