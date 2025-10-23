@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
+  <!-- Document metadata and resource preloads -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title data-ru="Выставка немецкого пива 2025 — Тюмень" data-en="German Beer Exhibition 2025 — Tyumen">Выставка немецкого пива 2025 — Тюмень</title>
@@ -28,6 +29,7 @@
   <link rel="preconnect" href="https://upload.wikimedia.org" crossorigin />
   <link rel="stylesheet" href="css/style.css" />
   <script defer src="js/script.js"></script>
+  <!-- Structured data to describe the festival for search engines -->
   <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -152,6 +154,7 @@
 <body>
   <a class="skip-link" href="#main-content" data-ru="Перейти к основному содержимому" data-en="Skip to main content">Перейти к основному содержимому</a>
 
+  <!-- Primary navigation with language toggle -->
   <header class="header">
     <a class="brand" href="#main-content" aria-label="BeerFest Tyumen">
       <img src="images/logo.png" alt="BeerFest Tyumen" width="48" height="48" loading="lazy" />
@@ -178,37 +181,43 @@
   </header>
 
   <main id="main-content" tabindex="-1">
-    <section class="hero">
-      <picture class="hero-media" aria-hidden="true">
-        <source srcset="https://images.unsplash.com/photo-1542744173-05336fcc7ad4?auto=format&amp;fit=crop&amp;w=1600&amp;q=80" type="image/jpeg" media="(min-width: 1024px)" />
-        <source srcset="https://images.unsplash.com/photo-1542744173-05336fcc7ad4?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" type="image/jpeg" media="(min-width: 640px)" />
-        <img src="https://images.unsplash.com/photo-1542744173-05336fcc7ad4?auto=format&amp;fit=crop&amp;w=960&amp;q=80" alt="Гости поднимают бокалы на пивном фестивале" loading="eager" decoding="async" width="1600" height="1067" />
-      </picture>
-      <div class="overlay" aria-hidden="true"></div>
-      <div class="hero-content">
-        <h1 data-ru="Выставка немецкого пива 2025" data-en="German Beer Exhibition 2025">Выставка немецкого пива 2025</h1>
-        <p class="subtitle" data-ru="20 сентября — 5 октября · Тюмень, Городской выставочный центр" data-en="20 September — 5 October · Tyumen, City Exhibition Center">20 сентября — 5 октября · Тюмень, Городской выставочный центр</p>
-        <div class="cta">
-          <a class="btn" href="#program" data-ru="Программа" data-en="Program">Программа</a>
-          <button class="btn ghost" data-booking-open data-ru="Забронировать" data-en="Book now">Забронировать</button>
+    <!-- Hero: split layout with call-to-action and teaser image -->
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="container hero-inner">
+        <div class="hero-content">
+          <h1 id="hero-title" data-ru="Выставка немецкого пива 2025" data-en="German Beer Exhibition 2025">Выставка немецкого пива 2025</h1>
+          <p class="subtitle" data-ru="20 сентября — 5 октября · Тюмень, Городской выставочный центр" data-en="20 September — 5 October · Tyumen, City Exhibition Center">20 сентября — 5 октября · Тюмень, Городской выставочный центр</p>
+          <div class="cta">
+            <a class="btn" href="#program" data-ru="Программа" data-en="Program">Программа</a>
+            <button class="btn ghost" data-booking-open data-ru="Забронировать" data-en="Book now">Забронировать</button>
+          </div>
+          <dl class="hero-badges">
+            <div>
+              <dt data-ru="Стили пива" data-en="Beer styles">Стили пива</dt>
+              <dd data-ru="80+" data-en="80+">80+</dd>
+            </div>
+            <div>
+              <dt data-ru="Спикеры" data-en="Speakers">Спикеры</dt>
+              <dd data-ru="15" data-en="15">15</dd>
+            </div>
+            <div>
+              <dt data-ru="Музыка" data-en="Live music">Музыка</dt>
+              <dd data-ru="каждый вечер" data-en="nightly">каждый вечер</dd>
+            </div>
+          </dl>
         </div>
+        <figure class="hero-visual">
+          <picture>
+            <source srcset="https://images.unsplash.com/photo-1542744173-05336fcc7ad4?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" type="image/jpeg" media="(min-width: 960px)" />
+            <source srcset="https://images.unsplash.com/photo-1542744173-05336fcc7ad4?auto=format&amp;fit=crop&amp;w=960&amp;q=80" type="image/jpeg" media="(min-width: 640px)" />
+            <img src="https://images.unsplash.com/photo-1542744173-05336fcc7ad4?auto=format&amp;fit=crop&amp;w=720&amp;q=80" alt="Гости поднимают бокалы на пивном фестивале" loading="eager" decoding="async" width="960" height="1280" />
+          </picture>
+          <figcaption class="sr-only" data-ru="Команда друзей чокается бокалами на фестивале" data-en="Friends cheering with beer glasses at the festival">Команда друзей чокается бокалами на фестивале</figcaption>
+        </figure>
       </div>
-      <dl class="hero-badges">
-        <div>
-          <dt data-ru="Стили пива" data-en="Beer styles">Стили пива</dt>
-          <dd data-ru="80+" data-en="80+">80+</dd>
-        </div>
-        <div>
-          <dt data-ru="Спикеры" data-en="Speakers">Спикеры</dt>
-          <dd data-ru="15" data-en="15">15</dd>
-        </div>
-        <div>
-          <dt data-ru="Музыка" data-en="Live music">Музыка</dt>
-          <dd data-ru="каждый вечер" data-en="nightly">каждый вечер</dd>
-        </div>
-      </dl>
     </section>
 
+    <!-- About: festival story and quick statistics -->
     <section id="about" class="section intro">
       <div class="container">
         <div class="text">
@@ -245,6 +254,7 @@
       </div>
     </section>
 
+    <!-- Program: filterable schedule -->
     <section id="program" class="section program">
       <div class="container">
         <div class="section-heading">
@@ -299,6 +309,7 @@
       </div>
     </section>
 
+    <!-- Tickets: pricing tiers and booking entry point -->
     <section id="tickets" class="section tickets">
       <div class="container">
         <div class="section-heading">
@@ -367,6 +378,7 @@
       </div>
     </section>
 
+    <!-- Experience: curated tastings and highlights -->
     <section id="experience" class="section experience">
       <div class="container">
         <div class="section-heading">
@@ -394,6 +406,7 @@
       </div>
     </section>
 
+    <!-- Testimonials: social proof quotes -->
     <section id="testimonials" class="section testimonials">
       <div class="container">
         <div class="section-heading">
@@ -417,6 +430,7 @@
       </div>
     </section>
 
+    <!-- Partners: logos of supporting brands -->
     <section id="partners" class="section partners">
       <div class="container">
         <div class="section-heading">
@@ -447,6 +461,7 @@
       </div>
     </section>
 
+    <!-- FAQ: common visitor questions -->
     <section id="faq" class="section faq">
       <div class="container">
         <div class="section-heading">
@@ -468,6 +483,7 @@
       </div>
     </section>
 
+    <!-- Contacts: newsletter and venue details -->
     <section id="contacts" class="section contacts">
       <div class="container">
         <div class="contact-card">
@@ -506,6 +522,7 @@
     </section>
   </main>
 
+  <!-- Footer: legal info and quick navigation -->
   <footer class="footer">
     <div class="container">
       <p data-ru="© 2025 BeerFest Tyumen. Все права защищены." data-en="© 2025 BeerFest Tyumen. All rights reserved.">© 2025 BeerFest Tyumen. Все права защищены.</p>
@@ -513,6 +530,7 @@
     </div>
   </footer>
 
+  <!-- Booking modal: progressive reservation flow -->
   <div class="booking-modal" role="dialog" aria-modal="true" aria-hidden="true" data-booking-modal>
     <div class="booking-modal__overlay" data-booking-close></div>
     <div class="booking-modal__dialog" role="document">
@@ -584,6 +602,7 @@
     </div>
   </div>
 
+  <!-- Chat widget: surface quick contact options -->
   <div class="chat-widget" data-chat>
     <button class="chat-widget__toggle" type="button" aria-expanded="false" data-ru="Нужна помощь?" data-en="Need help?">Нужна помощь?</button>
     <div class="chat-widget__panel" hidden>

@@ -1,7 +1,23 @@
+/**
+ * BeerFest Tyumen front-end interactions.
+ *
+ * Each self-invoking module below encapsulates a specific concern:
+ * - Language switching keeps copy, metadata and accessibility labels in sync.
+ * - Navigation logic handles responsive menus and active link states.
+ * - Content helpers animate galleries, filter the schedule and deliver calendar files.
+ * - Booking, newsletter and chat widgets provide interactive utilities for visitors.
+ */
+
+/**
+ * Module: Language toggler
+ * Keeps every data-* driven string aligned with the currently selected language
+ * and persists the choice for returning visitors.
+ */
 (function () {
   const LANG_KEY = "beerfest_lang";
   const langButtons = document.querySelectorAll(".lang-switch button");
 
+  // Update textual nodes, metadata and ARIA labels for the chosen language.
   const applyContent = (lang) => {
     document.querySelectorAll("[data-ru][data-en]").forEach((el) => {
       const value = lang === "en" ? el.dataset.en : el.dataset.ru;
@@ -52,6 +68,7 @@
     });
   };
 
+  // Persist the language choice and emit a custom event for other modules.
   const setLanguage = (lang) => {
     const normalized = lang === "en" ? "en" : "ru";
     document.documentElement.setAttribute("lang", normalized);
@@ -63,6 +80,7 @@
     document.dispatchEvent(new CustomEvent("beerfest:lang-change", { detail: normalized }));
   };
 
+  // Bind toggle buttons once the DOM is ready.
   langButtons.forEach((btn) => {
     btn.addEventListener("click", () => setLanguage(btn.dataset.lang));
   });
@@ -70,14 +88,20 @@
   setLanguage(localStorage.getItem(LANG_KEY) || "ru");
 })();
 
+/**
+ * Module: Responsive navigation
+ * Handles the hamburger button, ARIA labels and closing behaviour on breakpoints.
+ */
 (function () {
   const nav = document.querySelector(".nav");
   const toggle = document.querySelector(".nav-toggle");
   if (!nav || !toggle) return;
   const srLabel = toggle.querySelector(".sr-only");
 
+  // Determine the locale so we can pick the proper labels when toggling.
   const currentLang = () => (document.documentElement.getAttribute("lang") === "en" ? "en" : "ru");
 
+  // Swap the button copy and aria-label depending on the state.
   const setToggleLabels = (state) => {
     const lang = currentLang();
     const openLabel = lang === "en" ? toggle.dataset.enAriaLabel : toggle.dataset.ruAriaLabel;
@@ -105,6 +129,7 @@
     setToggleLabels("close");
   };
 
+  // Apply initial state and wire up listeners for closing on nav link clicks or escape.
   toggle.addEventListener("click", () => {
     if (nav.classList.contains("open")) {
       closeNav();
@@ -135,10 +160,15 @@
   setToggleLabels("open");
 })();
 
+/**
+ * Module: Active link tracking
+ * Highlights the nav item that matches the section in view using IntersectionObserver.
+ */
 (function () {
   const navLinks = Array.from(document.querySelectorAll(".nav a[href^='#']"));
   if (!navLinks.length) return;
 
+  // Build a list of nav link/section pairs to observe.
   const sections = navLinks
     .map((link) => {
       const id = link.getAttribute("href");
@@ -182,12 +212,17 @@
   sections.forEach(({ target }) => observer.observe(target));
 })();
 
+/**
+ * Module: Gallery reveal
+ * Lazily fades gallery images into view while respecting reduced-motion preferences.
+ */
 (function () {
   const galleryImages = document.querySelectorAll(".gallery-grid img");
   if (!galleryImages.length) return;
 
   const mediaQuery = window.matchMedia ? window.matchMedia("(prefers-reduced-motion: reduce)") : null;
 
+  // Honour reduced-motion preferences by skipping the observer.
   if (mediaQuery?.matches) {
     galleryImages.forEach((img) => img.classList.add("visible"));
     return;
@@ -208,11 +243,16 @@
   galleryImages.forEach((img) => observer.observe(img));
 })();
 
+/**
+ * Module: Program filters
+ * Toggles visibility of schedule cards according to the selected category.
+ */
 (function () {
   const filterButtons = document.querySelectorAll("[data-program-filter]");
   const items = document.querySelectorAll("[data-program-list] article");
   if (!filterButtons.length || !items.length) return;
 
+  // Hide or show events based on the requested category.
   const applyFilter = (category) => {
     items.forEach((item) => {
       const match = category === "all" || item.dataset.category === category;
@@ -228,10 +268,15 @@
   });
 })();
 
+/**
+ * Module: Program calendar export
+ * Generates an ICS file on the fly so visitors can add the schedule to their calendars.
+ */
 (function () {
   const link = document.querySelector('[data-calendar-download]:not([data-booking-ics])');
   if (!link) return;
 
+  // Static dataset used for the exported sessions.
   const programEvents = [
     {
       id: "opening-day",
@@ -274,6 +319,7 @@
     },
   ];
 
+  // Compose a calendar file in the currently active language.
   const generateICS = () => {
     const lang = document.documentElement.getAttribute("lang") === "en" ? "en" : "ru";
     const lines = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//BeerFest Tyumen//Program//RU"];
@@ -310,10 +356,15 @@
   });
 })();
 
+/**
+ * Module: Booking modal
+ * Drives the multi-step reservation flow, including validation, summaries and ICS export.
+ */
 (function () {
   const modal = document.querySelector("[data-booking-modal]");
   if (!modal) return;
 
+  // Cache frequently accessed nodes across the different steps.
   const steps = Array.from(modal.querySelectorAll(".booking-step"));
   const summaryBox = modal.querySelector("[data-booking-summary]");
   const submitBtn = modal.querySelector("[data-booking-submit]");
@@ -403,6 +454,7 @@
     }
   });
 
+  // Opening buttons within ticket cards pass along prefilled context.
   document.querySelectorAll("[data-booking-open]").forEach((trigger) => {
     trigger.addEventListener("click", () => {
       const card = trigger.closest("[data-ticket-card]");
@@ -415,6 +467,7 @@
     });
   });
 
+  // Allow visitors to navigate backwards through the form.
   modal.querySelectorAll("[data-booking-prev]").forEach((btn) => {
     btn.addEventListener("click", () => {
       if (currentStep === 0) return;
@@ -424,6 +477,7 @@
     });
   });
 
+  // Render a recap of the collected answers before submission.
   const showSummary = () => {
     const lang = document.documentElement.getAttribute("lang") === "en" ? "en" : "ru";
     const labels = translations[lang];
@@ -476,6 +530,7 @@
     showSummary();
   });
 
+  // Generate a personal ICS confirmation for the selected visit date.
   const createICS = () => {
     const lang = document.documentElement.getAttribute("lang") === "en" ? "en" : "ru";
     const ticket = ticketMap[bookingData.ticket] || ticketMap.single;
@@ -501,6 +556,7 @@
     return new Blob([lines.join("\r\n")], { type: "text/calendar" });
   };
 
+  // Final submission posts a mock payload and surfaces success/error messages.
   submitBtn.addEventListener("click", async () => {
     submitBtn.disabled = true;
     feedback.dataset.state = "";
@@ -544,6 +600,10 @@
   });
 })();
 
+/**
+ * Module: Newsletter form
+ * Posts subscription requests to the demo endpoint and reports success back to the user.
+ */
 (function () {
   const form = document.querySelector("[data-newsletter]");
   if (!form) return;
@@ -557,6 +617,7 @@
     const data = Object.fromEntries(new FormData(form));
 
     try {
+      // The JSONPlaceholder request simulates the actual backend call.
       const response = await fetch("https://jsonplaceholder.typicode.com/posts", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -579,6 +640,10 @@
   });
 })();
 
+/**
+ * Module: Chat widget
+ * Toggles the quick contact panel and keeps the aria-expanded state in sync.
+ */
 (function () {
   const widget = document.querySelector("[data-chat]");
   if (!widget) return;
