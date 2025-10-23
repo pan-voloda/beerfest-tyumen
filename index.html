@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Выставка немецкого пива 2025 — Тюмень</title>
+  <meta name="description" content="Выставка немецкого пива 2025 в Тюмени: традиции пивоварения, дегустации, лекции и галерея. 20 сентября — 5 октября.">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/style.css" />
+  <script defer src="js/script.js"></script>
+</head>
+<body>
+  <header class="header">
+    <a class="brand" href="#top" aria-label="BeerFest Tyumen">
+      <img src="images/logo.png" alt="BeerFest Tyumen logo" />
+      <span>BeerFest Tyumen</span>
+    </a>
+    <nav class="nav">
+      <a href="#about" data-ru="О выставке" data-en="About"></a>
+      <a href="#gallery" data-ru="Галерея" data-en="Gallery"></a>
+      <a href="#partners" data-ru="Партнёры" data-en="Partners"></a>
+      <a href="#contacts" data-ru="Контакты" data-en="Contacts"></a>
+    </nav>
+    <div class="lang-switch" role="group" aria-label="Language switcher">
+      <button data-lang="ru" class="active">RU</button>
+      <button data-lang="en">EN</button>
+    </div>
+  </header>
+
+  <main id="top">
+    <!-- HERO -->
+    <section class="hero" style="background-image: url('images/hero.jpg')">
+      <div class="overlay"></div>
+      <div class="hero-content">
+        <h1 data-ru="Выставка немецкого пива 2025" data-en="German Beer Exhibition 2025"></h1>
+        <p class="subtitle"
+           data-ru="20 сентября — 5 октября · Тюмень, Городской выставочный центр"
+           data-en="September 20 — October 5 · Tyumen, City Exhibition Center"></p>
+        <div class="cta">
+          <a class="btn" href="#about" data-ru="Подробнее" data-en="Learn more"></a>
+          <a class="btn ghost" href="#contacts" data-ru="Купить билет" data-en="Get tickets"></a>
+        </div>
+      </div>
+      <div class="hero-badges">
+        <span data-ru="80+ сортов" data-en="80+ styles"></span>
+        <span data-ru="Дегустации" data-en="Tastings"></span>
+        <span data-ru="Лекции и музыка" data-en="Talks & music"></span>
+      </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section id="about" class="section intro">
+      <div class="container">
+        <div class="text">
+          <h2 data-ru="О выставке" data-en="About the exhibition"></h2>
+          <p data-ru="Погрузитесь в мир немецкого пивоварения: от баварских классических лагерей до крафтовых IPA. Вас ждут дегустации, тематические лекции, зона фудпейринга и фотозоны."
+             data-en="Dive into the world of German brewing: from classic Bavarian lagers to modern craft IPAs. Enjoy tastings, talks, food pairing zones and photo spots."></p>
+          <ul class="bullets">
+            <li data-ru="Экспозиции от пивоварен и коллекционеров" data-en="Exhibitions from breweries and collectors"></li>
+            <li data-ru="Мастер-классы по дегустации" data-en="Tasting masterclasses"></li>
+            <li data-ru="Живая музыка и культурная программа" data-en="Live music and culture"></li>
+          </ul>
+        </div>
+        <figure class="visual">
+          <img src="images/hall.jpg" alt="" />
+          <figcaption data-ru="Зал экспозиции · Тюмень" data-en="Exhibition hall · Tyumen"></figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- GALLERY -->
+    <section id="gallery" class="section gallery">
+      <div class="container">
+        <h2 data-ru="Галерея" data-en="Gallery"></h2>
+        <div class="grid">
+          <img src="images/beer1.jpg" alt="Beer photo 1" class="reveal" />
+          <img src="images/beer2.jpg" alt="Beer photo 2" class="reveal" />
+          <img src="images/beer3.jpg" alt="Beer photo 3" class="reveal" />
+          <img src="images/hall.jpg" alt="Exhibition hall" class="reveal" />
+        </div>
+        <p class="note" data-ru="* На сайте используются демонстрационные изображения."
+           data-en="* Demo placeholder images are used on the site."></p>
+      </div>
+
+      <!-- Simple lightbox modal -->
+      <div id="lightbox" class="lightbox" aria-hidden="true">
+        <button class="close" aria-label="Close">×</button>
+        <img alt="Preview" />
+      </div>
+    </section>
+
+    <!-- PARTNERS -->
+    <section id="partners" class="section partners">
+      <div class="container">
+        <h2 data-ru="Организаторы и партнёры" data-en="Organizers & Partners"></h2>
+        <div class="logos">
+          <img src="images/partners/partner1.png" alt="Partner 1">
+          <img src="images/partners/partner2.png" alt="Partner 2">
+          <img src="images/partners/partner3.png" alt="Partner 3">
+          <img src="images/partners/partner4.png" alt="Partner 4">
+        </div>
+        <p data-ru="Хотите стать партнёром? Свяжитесь с нами для коллабораций и спонсорских пакетов."
+           data-en="Want to partner with us? Contact for collaborations and sponsorship packages."></p>
+      </div>
+    </section>
+
+    <!-- CONTACTS -->
+    <section id="contacts" class="section contacts">
+      <div class="container">
+        <h2 data-ru="Контакты" data-en="Contacts"></h2>
+        <div class="cards">
+          <div class="card">
+            <h3 data-ru="Место" data-en="Venue"></h3>
+            <p data-ru="Городской выставочный центр, Тюмень" data-en="City Exhibition Center, Tyumen"></p>
+          </div>
+          <div class="card">
+            <h3 data-ru="Даты" data-en="Dates"></h3>
+            <p data-ru="20 сентября — 5 октября 2025" data-en="September 20 — October 5, 2025"></p>
+          </div>
+          <div class="card">
+            <h3>Email</h3>
+            <p><a href="mailto:info@beerfest-tyumen.ru">info@beerfest-tyumen.ru</a></p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <img src="images/logo.svg" alt="BeerFest Tyumen" class="footlogo"/>
+      <p data-ru="© 2025 Выставка немецкого пива · Тюмень" data-en="© 2025 German Beer Exhibition · Tyumen"></p>
+    </div>
+  </footer>
+</body>
+</html>

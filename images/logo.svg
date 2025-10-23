@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 80">
+  <defs>
+    <linearGradient id="g" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0%" stop-color="#f2c14e"/>
+      <stop offset="100%" stop-color="#8d5524"/>
+    </linearGradient>
+  </defs>
+  <rect x="0" y="0" width="300" height="80" fill="#111"/>
+  <g>
+    <rect x="20" y="15" rx="8" ry="8" width="50" height="50" fill="url(#g)" stroke="#fff" stroke-width="2"/>
+    <circle cx="45" cy="25" r="8" fill="#fff" opacity="0.9"/>
+  </g>
+  <text x="90" y="50" font-family="Inter, Segoe UI, Arial" font-weight="700" font-size="26" fill="#f2c14e">
+    BeerFest Tyumen
+  </text>
+</svg>
