@@ -30,6 +30,27 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+.skip-link {
+  position: absolute;
+  left: 16px;
+  top: 12px;
+  transform: translateY(-200%);
+  background: var(--amber);
+  color: #000;
+  padding: 0.55rem 1rem;
+  border-radius: 8px;
+  font-weight: 700;
+  z-index: 1000;
+  transition: transform 0.2s ease;
+}
+
+.skip-link:focus,
+.skip-link:focus-visible {
+  transform: translateY(0);
+  outline: 3px solid var(--amber-dark);
+  outline-offset: 2px;
+}
+
 a {
   color: var(--amber);
   text-decoration: none;
@@ -113,6 +134,16 @@ textarea {
   transform: scaleX(0);
   transform-origin: left;
   transition: transform 0.25s ease;
+}
+
+.nav a.is-active,
+.nav a[aria-current="page"] {
+  color: #fff;
+}
+
+.nav a.is-active::after,
+.nav a[aria-current="page"]::after {
+  transform: scaleX(1);
 }
 
 .nav a:hover::after,
@@ -201,14 +232,31 @@ textarea {
   align-items: center;
   justify-content: center;
   text-align: center;
-  background-size: cover;
-  background-position: center;
+  overflow: hidden;
+}
+
+.hero-media {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.hero-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  filter: saturate(1.1);
 }
 
 .hero .overlay {
   position: absolute;
   inset: 0;
   background: linear-gradient(180deg, rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.82));
+  z-index: 1;
+  pointer-events: none;
 }
 
 .hero-content {
@@ -503,6 +551,24 @@ textarea {
   cursor: pointer;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .btn,
+  .nav a::after,
+  .hero-media img,
+  .gallery img,
+  .nav-toggle__icon,
+  .nav-toggle__icon::before,
+  .nav-toggle__icon::after {
+    transition: none !important;
+  }
+
+  .gallery img,
+  .gallery img.visible {
+    transform: none !important;
+    opacity: 1 !important;
+  }
+}
+
 .tickets .ticket-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -676,9 +742,13 @@ textarea {
   margin: 0;
 }
 
-.contact-form label {
-  display: grid;
+.contact-form .form-field {
+  display: flex;
+  flex-direction: column;
   gap: 0.35rem;
+}
+
+.contact-form .form-field > span:first-child {
   font-weight: 600;
 }
 
@@ -690,6 +760,18 @@ textarea {
   padding: 0.7rem 0.8rem;
   color: var(--text);
   resize: vertical;
+}
+
+.contact-form .error-message {
+  min-height: 1rem;
+  font-size: 0.85rem;
+  color: #ffb3a2;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.contact-form .error-message:empty {
+  display: none;
 }
 
 .contact-form input:focus,

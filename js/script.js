@@ -34,6 +34,13 @@
         el.textContent = lang === "en" ? el.dataset.enError : el.dataset.ruError;
       }
     });
+
+    document.querySelectorAll("[data-ru-content][data-en-content]").forEach((el) => {
+      const value = lang === "en" ? el.dataset.enContent : el.dataset.ruContent;
+      if (value !== undefined) {
+        el.setAttribute("content", value);
+      }
+    });
   };
 
   const setLang = (lang) => {
@@ -120,8 +127,86 @@
   setToggleLabel("open");
 })();
 
+// Active navigation state based on scroll position
+(function () {
+  const navLinks = Array.from(document.querySelectorAll(".nav a[href^='#']"));
+  if (!navLinks.length) return;
+
+  const sections = navLinks
+    .map((link) => {
+      const id = link.getAttribute("href");
+      if (!id) return null;
+      const target = document.querySelector(id);
+      if (!target) return null;
+      return { link, target };
+    })
+    .filter(Boolean);
+
+  if (!sections.length) return;
+
+  const setActiveLink = (activeLink) => {
+    sections.forEach(({ link }) => {
+      const isActive = link === activeLink;
+      link.classList.toggle("is-active", isActive);
+      if (isActive) {
+        link.setAttribute("aria-current", "page");
+      } else {
+        link.removeAttribute("aria-current");
+      }
+    });
+  };
+
+  if (typeof IntersectionObserver !== "function") {
+    setActiveLink(sections[0].link);
+    return;
+  }
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const match = sections.find((item) => item.target === entry.target);
+          if (match) {
+            setActiveLink(match.link);
+          }
+        }
+      });
+    },
+    { rootMargin: "-55% 0px -40% 0px", threshold: 0 }
+  );
+
+  sections.forEach(({ target }) => observer.observe(target));
+
+  navLinks.forEach((link) => {
+    link.addEventListener("click", () => {
+      setActiveLink(link);
+    });
+  });
+
+  setActiveLink(sections[0].link);
+})();
+
 // Reveal on scroll (gallery images)
 (function () {
+  const images = document.querySelectorAll(".gallery img");
+  if (!images.length) return;
+
+  const mediaQuery = window.matchMedia ? window.matchMedia("(prefers-reduced-motion: reduce)") : null;
+
+  const revealImmediately = () => {
+    images.forEach((img) => img.classList.add("visible"));
+  };
+
+  if (mediaQuery?.matches) {
+    revealImmediately();
+    return;
+  }
+
+  if (typeof IntersectionObserver !== "function") {
+    revealImmediately();
+    return;
+  }
+
   const obs = new IntersectionObserver(
     (entries, observer) => {
       entries.forEach((entry) => {
@@ -133,7 +218,18 @@
     },
     { threshold: 0.2 }
   );
-  document.querySelectorAll(".gallery img").forEach((img) => obs.observe(img));
+
+  images.forEach((img) => obs.observe(img));
+
+  const handleMotionChange = (event) => {
+    if (event.matches) {
+      obs.disconnect();
+      revealImmediately();
+    }
+  };
+
+  mediaQuery?.addEventListener?.("change", handleMotionChange);
+  mediaQuery?.addListener?.(handleMotionChange);
 })();
 
 // Simple lightbox
@@ -181,13 +277,69 @@
   const form = document.querySelector(".contact-form");
   if (!form) return;
   const statusEl = form.querySelector(".form-status");
-  const requiredFields = form.querySelectorAll("input[required], textarea[required]");
+  const requiredFields = Array.from(form.querySelectorAll("input[required], textarea[required]"));
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/i;
 
   const getLang = () => (document.documentElement.getAttribute("lang") === "en" ? "en" : "ru");
+
+  const getErrorElement = (field) => field.closest(".form-field")?.querySelector(".error-message");
+
+  const getMessageKey = (type, lang) => {
+    if (type === "invalid") {
+      return lang === "en" ? "enInvalid" : "ruInvalid";
+    }
+    return lang === "en" ? "enRequired" : "ruRequired";
+  };
+
+  const applyErrorMessage = (errorEl, type, lang) => {
+    if (!errorEl) return;
+    const key = getMessageKey(type, lang);
+    const fallbackKey = getMessageKey("required", lang);
+    errorEl.textContent = errorEl.dataset[key] || errorEl.dataset[fallbackKey] || "";
+  };
+
+  const setFieldError = (field, type) => {
+    const lang = getLang();
+    const errorEl = getErrorElement(field);
+    field.classList.add("invalid");
+    field.setAttribute("aria-invalid", "true");
+    if (errorEl) {
+      errorEl.dataset.state = type;
+      applyErrorMessage(errorEl, type, lang);
+    }
+  };
+
+  const clearFieldError = (field) => {
+    const errorEl = getErrorElement(field);
+    field.classList.remove("invalid");
+    field.removeAttribute("aria-invalid");
+    if (errorEl) {
+      delete errorEl.dataset.state;
+      errorEl.textContent = "";
+    }
+  };
+
+  const validateField = (field) => {
+    const value = field.value.trim();
+    if (!value) {
+      return { valid: false, type: "required" };
+    }
+    if (field.type === "email" && !emailPattern.test(value)) {
+      return { valid: false, type: "invalid" };
+    }
+    return { valid: true };
+  };
 
   const updateStatus = (type) => {
     if (!statusEl) return;
     const lang = getLang();
+    if (type === "clear") {
+      statusEl.classList.remove("error");
+      statusEl.textContent = "";
+      delete statusEl.dataset.state;
+      return;
+    }
+
     statusEl.dataset.state = type;
     if (type === "error") {
       statusEl.classList.add("error");
@@ -195,10 +347,6 @@
     } else if (type === "success") {
       statusEl.classList.remove("error");
       statusEl.textContent = lang === "en" ? statusEl.dataset.enSuccess : statusEl.dataset.ruSuccess;
-    } else {
-      statusEl.classList.remove("error");
-      statusEl.textContent = "";
-      delete statusEl.dataset.state;
     }
   };
 
@@ -207,12 +355,12 @@
     let hasError = false;
 
     requiredFields.forEach((field) => {
-      const value = field.value.trim();
-      if (!value) {
-        field.classList.add("invalid");
+      const result = validateField(field);
+      if (!result.valid) {
+        setFieldError(field, result.type);
         hasError = true;
       } else {
-        field.classList.remove("invalid");
+        clearFieldError(field);
       }
     });
 
@@ -223,20 +371,41 @@
 
     updateStatus("success");
     form.reset();
+    requiredFields.forEach(clearFieldError);
     setTimeout(() => updateStatus("clear"), 5000);
   });
 
   requiredFields.forEach((field) => {
     field.addEventListener("input", () => {
-      if (field.value.trim()) {
-        field.classList.remove("invalid");
+      const result = validateField(field);
+      if (result.valid) {
+        clearFieldError(field);
+      } else if (field.classList.contains("invalid") || field.getAttribute("aria-invalid") === "true") {
+        setFieldError(field, result.type);
+      }
+    });
+
+    field.addEventListener("blur", () => {
+      const result = validateField(field);
+      if (!result.valid) {
+        setFieldError(field, result.type);
+      } else {
+        clearFieldError(field);
       }
     });
   });
 
   document.addEventListener("beerfest:lang-change", () => {
     const state = statusEl?.dataset.state;
-    if (!state) return;
-    updateStatus(state);
+    if (state) {
+      updateStatus(state);
+    }
+    requiredFields.forEach((field) => {
+      const errorEl = getErrorElement(field);
+      const errorState = errorEl?.dataset.state;
+      if (errorEl && errorState) {
+        applyErrorMessage(errorEl, errorState, getLang());
+      }
+    });
   });
 })();
