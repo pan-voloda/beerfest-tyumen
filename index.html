@@ -3,11 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Выставка немецкого пива 2025 — Тюмень</title>
-  <meta name="description" content="Выставка немецкого пива 2025 в Тюмени: традиции пивоварения, дегустации, лекции и насыщенная программа. 20 сентября — 5 октября." />
+  <title data-ru="Выставка немецкого пива 2025 — Тюмень" data-en="German Beer Exhibition 2025 — Tyumen">Выставка немецкого пива 2025 — Тюмень</title>
+  <meta name="description" data-ru-content="Выставка немецкого пива 2025 в Тюмени: традиции пивоварения, дегустации, лекции и насыщенная программа. 20 сентября — 5 октября." data-en-content="German Beer Exhibition 2025 in Tyumen: traditional brewing, tastings, talks and a rich cultural programme. 20 September — 5 October." content="Выставка немецкого пива 2025 в Тюмени: традиции пивоварения, дегустации, лекции и насыщенная программа. 20 сентября — 5 октября." />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' https://images.unsplash.com https://media.istockphoto.com https://www.daskochrezept.de https://upload.wikimedia.org data:; font-src 'self'; connect-src 'self'; frame-src 'self' https://www.openstreetmap.org; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; prefetch-src 'self' https://images.unsplash.com https://upload.wikimedia.org;" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
   <meta name="theme-color" content="#0e0c0a" />
-  <meta property="og:title" content="Выставка немецкого пива 2025 — Тюмень" />
-  <meta property="og:description" content="80+ сортов пива, дегустации, лекции и культурная программа в Тюмени." />
+  <meta property="og:title" data-ru-content="Выставка немецкого пива 2025 — Тюмень" data-en-content="German Beer Exhibition 2025 — Tyumen" content="Выставка немецкого пива 2025 — Тюмень" />
+  <meta property="og:description" data-ru-content="80+ сортов пива, дегустации, лекции и культурная программа в Тюмени." data-en-content="80+ beer styles, tastings, talks and cultural programme in Tyumen." content="80+ сортов пива, дегустации, лекции и культурная программа в Тюмени." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://beerfest-tyumen.example" />
   <meta property="og:image" content="https://images.unsplash.com/photo-1542744173-05336fcc7ad4?auto=format&amp;fit=crop&amp;w=1600&amp;q=80" />
@@ -16,10 +19,68 @@
   <link rel="preconnect" href="https://upload.wikimedia.org" crossorigin />
   <link rel="stylesheet" href="css/style.css" />
   <script defer src="js/script.js"></script>
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Event",
+      "@id": "https://beerfest-tyumen.example/#event",
+      "name": "German Beer Exhibition 2025 — Tyumen",
+      "alternateName": "Выставка немецкого пива 2025 — Тюмень",
+      "description": "BeerFest Tyumen brings German and Russian brewers together for tastings, talks and cultural events.",
+      "startDate": "2025-09-20T10:00:00+05:00",
+      "endDate": "2025-10-05T22:00:00+05:00",
+      "eventStatus": "https://schema.org/EventScheduled",
+      "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+      "inLanguage": ["ru", "en"],
+      "image": [
+        "https://images.unsplash.com/photo-1542744173-05336fcc7ad4?auto=format&fit=crop&w=1600&q=80",
+        "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&w=1200&q=80"
+      ],
+      "location": {
+        "@type": "Place",
+        "name": "City Exhibition Center, Tyumen",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "ул. Севастопольская, 12",
+          "addressLocality": "Tyumen",
+          "postalCode": "625000",
+          "addressCountry": "RU"
+        }
+      },
+      "organizer": {
+        "@type": "Organization",
+        "name": "BeerFest Tyumen",
+        "url": "https://beerfest-tyumen.example"
+      },
+      "offers": [
+        {
+          "@type": "Offer",
+          "name": "Single day",
+          "price": "1500",
+          "priceCurrency": "RUB",
+          "availability": "https://schema.org/InStock"
+        },
+        {
+          "@type": "Offer",
+          "name": "Weekend Pass",
+          "price": "3900",
+          "priceCurrency": "RUB",
+          "availability": "https://schema.org/InStock"
+        },
+        {
+          "@type": "Offer",
+          "name": "Premium Industry",
+          "price": "7500",
+          "priceCurrency": "RUB",
+          "availability": "https://schema.org/LimitedAvailability"
+        }
+      ]
+    }
+  </script>
 </head>
 <body>
   <header class="header">
-    <a class="brand" href="#top" aria-label="BeerFest Tyumen">
+    <a class="brand" href="#main-content" aria-label="BeerFest Tyumen">
       <img src="images/logo.png" alt="BeerFest Tyumen logo" />
       <span>BeerFest Tyumen</span>
     </a>
@@ -44,10 +105,15 @@
     </div>
   </header>
 
-  <main id="top">
+  <main id="main-content" tabindex="-1">
     <!-- HERO -->
-    <section class="hero" style="background-image: url('https://images.unsplash.com/photo-1542744173-05336fcc7ad4?auto=format&amp;fit=crop&amp;w=1600&amp;q=80')">
-      <div class="overlay"></div>
+    <section class="hero">
+      <picture class="hero-media" aria-hidden="true">
+        <source srcset="https://images.unsplash.com/photo-1542744173-05336fcc7ad4?auto=format&amp;fit=crop&amp;w=1600&amp;q=80" media="(min-width: 1024px)" />
+        <source srcset="https://images.unsplash.com/photo-1542744173-05336fcc7ad4?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" media="(min-width: 640px)" />
+        <img src="https://images.unsplash.com/photo-1542744173-05336fcc7ad4?auto=format&amp;fit=crop&amp;w=960&amp;q=80" alt="" loading="eager" decoding="async" fetchpriority="high" sizes="100vw" />
+      </picture>
+      <div class="overlay" aria-hidden="true"></div>
       <div class="hero-content">
         <h1 data-ru="Выставка немецкого пива 2025" data-en="German Beer Exhibition 2025"></h1>
         <p class="subtitle"
@@ -152,10 +218,10 @@
       <div class="container">
         <h2 data-ru="Галерея" data-en="Gallery"></h2>
         <div class="grid">
-          <img src="https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="Пивные бокалы на дегустации" class="reveal" loading="lazy" decoding="async" />
-          <img src="https://images.unsplash.com/photo-1541558869434-2840d308329a?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="Посетители фестиваля поднимают бокалы" class="reveal" loading="lazy" decoding="async" />
-          <img src="https://images.unsplash.com/photo-1508057198894-247b23fe5ade?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="Коллекция бутылок немецкого пива" class="reveal" loading="lazy" decoding="async" />
-          <img src="https://media.istockphoto.com/id/607275140/de/foto/junge-sexy-oktoberfest-kellnerin-tr%C3%A4gt-ein-traditionelles-bayerisches-kleid-serviert.jpg?s=612x612&w=0&k=20&c=YElKIE8z_4NoXg3lNHvA7AVg5l_Nrt2-0fU_6bhxQYE=" alt="Бармен разливает крафтовое пиво" class="reveal" loading="lazy" decoding="async" />
+          <img src="https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&amp;fit=crop&amp;w=800&amp;q=80" srcset="https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&amp;fit=crop&amp;w=400&amp;q=80 400w, https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&amp;fit=crop&amp;w=800&amp;q=80 800w, https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&amp;fit=crop&amp;w=1200&amp;q=80 1200w" sizes="(min-width: 1024px) 22vw, (min-width: 640px) 45vw, 90vw" alt="Пивные бокалы на дегустации" class="reveal" loading="lazy" decoding="async" />
+          <img src="https://images.unsplash.com/photo-1541558869434-2840d308329a?auto=format&amp;fit=crop&amp;w=800&amp;q=80" srcset="https://images.unsplash.com/photo-1541558869434-2840d308329a?auto=format&amp;fit=crop&amp;w=400&amp;q=80 400w, https://images.unsplash.com/photo-1541558869434-2840d308329a?auto=format&amp;fit=crop&amp;w=800&amp;q=80 800w, https://images.unsplash.com/photo-1541558869434-2840d308329a?auto=format&amp;fit=crop&amp;w=1200&amp;q=80 1200w" sizes="(min-width: 1024px) 22vw, (min-width: 640px) 45vw, 90vw" alt="Посетители фестиваля поднимают бокалы" class="reveal" loading="lazy" decoding="async" />
+          <img src="https://images.unsplash.com/photo-1508057198894-247b23fe5ade?auto=format&amp;fit=crop&amp;w=800&amp;q=80" srcset="https://images.unsplash.com/photo-1508057198894-247b23fe5ade?auto=format&amp;fit=crop&amp;w=400&amp;q=80 400w, https://images.unsplash.com/photo-1508057198894-247b23fe5ade?auto=format&amp;fit=crop&amp;w=800&amp;q=80 800w, https://images.unsplash.com/photo-1508057198894-247b23fe5ade?auto=format&amp;fit=crop&amp;w=1200&amp;q=80 1200w" sizes="(min-width: 1024px) 22vw, (min-width: 640px) 45vw, 90vw" alt="Коллекция бутылок немецкого пива" class="reveal" loading="lazy" decoding="async" />
+          <img src="https://media.istockphoto.com/id/607275140/de/foto/junge-sexy-oktoberfest-kellnerin-tr%C3%A4gt-ein-traditionelles-bayerisches-kleid-serviert.jpg?s=612x612&amp;w=0&amp;k=20&amp;c=YElKIE8z_4NoXg3lNHvA7AVg5l_Nrt2-0fU_6bhxQYE=" srcset="https://media.istockphoto.com/id/607275140/de/foto/junge-sexy-oktoberfest-kellnerin-tr%C3%A4gt-ein-traditionelles-bayerisches-kleid-serviert.jpg?s=612x612&amp;w=0&amp;k=20&amp;c=YElKIE8z_4NoXg3lNHvA7AVg5l_Nrt2-0fU_6bhxQYE= 612w" sizes="(min-width: 1024px) 22vw, (min-width: 640px) 45vw, 90vw" alt="Бармен разливает крафтовое пиво" class="reveal" loading="lazy" decoding="async" />
         </div>
         <p class="note">
           <span data-ru="Фотографии предоставлены авторами Unsplash и Wikimedia Commons." data-en="Photography courtesy of Unsplash contributors and Wikimedia Commons."></span>
@@ -290,20 +356,23 @@
             </div>
             <form class="contact-form" novalidate>
               <h3 data-ru="Напишите нам" data-en="Write to us"></h3>
-              <label>
+              <label class="form-field">
                 <span data-ru="Имя" data-en="Name"></span>
-                <input type="text" name="name" required data-ru-placeholder="Ваше имя" data-en-placeholder="Your name" />
+                <input type="text" name="name" required data-ru-placeholder="Ваше имя" data-en-placeholder="Your name" autocomplete="name" aria-describedby="contact-name-error" />
+                <span class="error-message" id="contact-name-error" aria-live="polite" data-field="name" data-ru-required="Введите имя" data-en-required="Enter your name"></span>
               </label>
-              <label>
+              <label class="form-field">
                 <span data-ru="Email" data-en="Email"></span>
-                <input type="email" name="email" required data-ru-placeholder="example@mail.ru" data-en-placeholder="example@mail.com" />
+                <input type="email" name="email" required data-ru-placeholder="example@mail.ru" data-en-placeholder="example@mail.com" autocomplete="email" inputmode="email" aria-describedby="contact-email-error" />
+                <span class="error-message" id="contact-email-error" aria-live="polite" data-field="email" data-ru-required="Введите email" data-en-required="Enter your email" data-ru-invalid="Укажите корректный email" data-en-invalid="Enter a valid email address"></span>
               </label>
-              <label>
+              <label class="form-field">
                 <span data-ru="Сообщение" data-en="Message"></span>
-                <textarea name="message" rows="4" required data-ru-placeholder="Чем мы можем помочь?" data-en-placeholder="How can we help?"></textarea>
+                <textarea name="message" rows="4" required data-ru-placeholder="Чем мы можем помочь?" data-en-placeholder="How can we help?" autocomplete="off" aria-describedby="contact-message-error"></textarea>
+                <span class="error-message" id="contact-message-error" aria-live="polite" data-field="message" data-ru-required="Напишите сообщение" data-en-required="Please enter a message"></span>
               </label>
               <button type="submit" class="btn" data-ru="Отправить" data-en="Send"></button>
-              <p class="form-status" aria-live="polite" data-ru-success="Спасибо! Мы свяжемся с вами в ближайшее время." data-en-success="Thank you! We'll get back to you soon." data-ru-error="Пожалуйста, заполните все поля." data-en-error="Please fill in all fields."></p>
+              <p class="form-status" aria-live="polite" data-ru-success="Спасибо! Мы свяжемся с вами в ближайшее время." data-en-success="Thank you! We'll get back to you soon." data-ru-error="Пожалуйста, исправьте отмеченные поля." data-en-error="Please correct the highlighted fields."></p>
             </form>
           </div>
           <div class="map-wrapper">
@@ -321,9 +390,9 @@
         <p data-ru="© 2025 Выставка немецкого пива · Тюмень" data-en="© 2025 German Beer Exhibition · Tyumen"></p>
       </div>
       <ul class="social">
-        <li><a href="https://vk.com/beerfesttyumen" target="_blank" rel="noreferrer">VK</a></li>
-        <li><a href="https://t.me/beerfesttyumen" target="_blank" rel="noreferrer">Telegram</a></li>
-        <li><a href="https://instagram.com/beerfesttyumen" target="_blank" rel="noreferrer">Instagram</a></li>
+        <li><a href="https://vk.com/beerfesttyumen" target="_blank" rel="noopener noreferrer">VK</a></li>
+        <li><a href="https://t.me/beerfesttyumen" target="_blank" rel="noopener noreferrer">Telegram</a></li>
+        <li><a href="https://instagram.com/beerfesttyumen" target="_blank" rel="noopener noreferrer">Instagram</a></li>
       </ul>
     </div>
   </footer>
