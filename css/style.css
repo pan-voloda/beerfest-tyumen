@@ -604,7 +604,9 @@ textarea {
 .partners img {
   width: auto;
   max-width: 140px;
+  max-height: 70px;
   margin: 0 auto;
+  object-fit: contain;
 }
 
 .partners figcaption {
