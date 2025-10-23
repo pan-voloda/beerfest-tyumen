@@ -4,8 +4,16 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Выставка немецкого пива 2025 — Тюмень</title>
-  <meta name="description" content="Выставка немецкого пива 2025 в Тюмени: традиции пивоварения, дегустации, лекции и галерея. 20 сентября — 5 октября.">
-  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <meta name="description" content="Выставка немецкого пива 2025 в Тюмени: традиции пивоварения, дегустации, лекции и насыщенная программа. 20 сентября — 5 октября." />
+  <meta name="theme-color" content="#0e0c0a" />
+  <meta property="og:title" content="Выставка немецкого пива 2025 — Тюмень" />
+  <meta property="og:description" content="80+ сортов пива, дегустации, лекции и культурная программа в Тюмени." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://beerfest-tyumen.example" />
+  <meta property="og:image" content="https://images.unsplash.com/photo-1542744173-05336fcc7ad4?auto=format&amp;fit=crop&amp;w=1600&amp;q=80" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://images.unsplash.com" crossorigin />
+  <link rel="preconnect" href="https://upload.wikimedia.org" crossorigin />
   <link rel="stylesheet" href="css/style.css" />
   <script defer src="js/script.js"></script>
 </head>
@@ -15,10 +23,19 @@
       <img src="images/logo.png" alt="BeerFest Tyumen logo" />
       <span>BeerFest Tyumen</span>
     </a>
-    <nav class="nav">
+    <button class="nav-toggle" type="button" aria-controls="primary-nav" aria-expanded="false"
+            data-ru-aria-label="Открыть меню" data-en-aria-label="Open menu"
+            data-ru-aria-label-close="Закрыть меню" data-en-aria-label-close="Close menu">
+      <span class="sr-only" data-ru="Меню" data-en="Menu" data-ru-close="Закрыть меню" data-en-close="Close menu"></span>
+      <span class="nav-toggle__icon" aria-hidden="true"></span>
+    </button>
+    <nav class="nav" id="primary-nav">
       <a href="#about" data-ru="О выставке" data-en="About"></a>
+      <a href="#program" data-ru="Программа" data-en="Program"></a>
       <a href="#gallery" data-ru="Галерея" data-en="Gallery"></a>
+      <a href="#tickets" data-ru="Билеты" data-en="Tickets"></a>
       <a href="#partners" data-ru="Партнёры" data-en="Partners"></a>
+      <a href="#faq" data-ru="FAQ" data-en="FAQ"></a>
       <a href="#contacts" data-ru="Контакты" data-en="Contacts"></a>
     </nav>
     <div class="lang-switch" role="group" aria-label="Language switcher">
@@ -29,7 +46,7 @@
 
   <main id="top">
     <!-- HERO -->
-    <section class="hero" style="background-image: url('images/hero.jpg')">
+    <section class="hero" style="background-image: url('https://images.unsplash.com/photo-1542744173-05336fcc7ad4?auto=format&amp;fit=crop&amp;w=1600&amp;q=80')">
       <div class="overlay"></div>
       <div class="hero-content">
         <h1 data-ru="Выставка немецкого пива 2025" data-en="German Beer Exhibition 2025"></h1>
@@ -37,14 +54,14 @@
            data-ru="20 сентября — 5 октября · Тюмень, Городской выставочный центр"
            data-en="September 20 — October 5 · Tyumen, City Exhibition Center"></p>
         <div class="cta">
-          <a class="btn" href="#about" data-ru="Подробнее" data-en="Learn more"></a>
-          <a class="btn ghost" href="#contacts" data-ru="Купить билет" data-en="Get tickets"></a>
+          <a class="btn" href="#program" data-ru="Программа" data-en="Program"></a>
+          <a class="btn ghost" href="#tickets" data-ru="Купить билет" data-en="Book tickets"></a>
         </div>
       </div>
       <div class="hero-badges">
         <span data-ru="80+ сортов" data-en="80+ styles"></span>
-        <span data-ru="Дегустации" data-en="Tastings"></span>
-        <span data-ru="Лекции и музыка" data-en="Talks & music"></span>
+        <span data-ru="10 мастер-классов" data-en="10 masterclasses"></span>
+        <span data-ru="Живая музыка" data-en="Live music"></span>
       </div>
     </section>
 
@@ -53,18 +70,80 @@
       <div class="container">
         <div class="text">
           <h2 data-ru="О выставке" data-en="About the exhibition"></h2>
-          <p data-ru="Погрузитесь в мир немецкого пивоварения: от баварских классических лагерей до крафтовых IPA. Вас ждут дегустации, тематические лекции, зона фудпейринга и фотозоны."
-             data-en="Dive into the world of German brewing: from classic Bavarian lagers to modern craft IPAs. Enjoy tastings, talks, food pairing zones and photo spots."></p>
+          <p data-ru="BeerFest Tyumen объединяет ведущих пивоваров Германии и России. Вы попробуете классические лагерные стили, необычные эли малого тиража и узнаете о трендах индустрии из уст мастеров." 
+             data-en="BeerFest Tyumen unites leading brewers from Germany and Russia. Taste classic lagers, limited small-batch ales and learn about industry trends straight from the experts."></p>
+          <p data-ru="Каждый день фестиваля посвящён отдельной теме — истории пивоварения, гастрономическим сочетаниям или современным технологиям. Мы продумали навигацию, залы и отдых так, чтобы гостям было комфортно в любое время." 
+             data-en="Each festival day spotlights a theme — brewing history, food pairings or cutting-edge technology. Navigation, halls and lounge zones are curated to keep guests comfortable all day."></p>
           <ul class="bullets">
-            <li data-ru="Экспозиции от пивоварен и коллекционеров" data-en="Exhibitions from breweries and collectors"></li>
-            <li data-ru="Мастер-классы по дегустации" data-en="Tasting masterclasses"></li>
-            <li data-ru="Живая музыка и культурная программа" data-en="Live music and culture"></li>
+            <li data-ru="Эксклюзивные дегустации с сомелье" data-en="Exclusive tastings with beer sommeliers"></li>
+            <li data-ru="Пивные пары с шеф-поварами Тюмени" data-en="Beer pairings led by Tyumen chefs"></li>
+            <li data-ru="Разговоры с пивоварами и коллекционерами" data-en="Talks with brewers and collectors"></li>
           </ul>
+          <div class="stats">
+            <div class="stat">
+              <strong>25</strong>
+              <span data-ru="пивоварен" data-en="breweries"></span>
+            </div>
+            <div class="stat">
+              <strong>15</strong>
+              <span data-ru="лекторов" data-en="speakers"></span>
+            </div>
+            <div class="stat">
+              <strong>12</strong>
+              <span data-ru="food-пейрингов" data-en="food pairings"></span>
+            </div>
+          </div>
         </div>
         <figure class="visual">
-          <img src="images/hall.jpg" alt="" />
-          <figcaption data-ru="Зал экспозиции · Тюмень" data-en="Exhibition hall · Tyumen"></figcaption>
+          <img src="https://upload.wikimedia.org/wikipedia/commons/b/b0/Weissbier_in_Munich.jpg" alt="Пивные бокалы на ярмарке в Мюнхене" loading="lazy" decoding="async" />
+          <figcaption data-ru="Экспозиция немецкого пивоварения" data-en="German brewing showcase"></figcaption>
         </figure>
+      </div>
+    </section>
+
+    <!-- PROGRAM -->
+    <section id="program" class="section program">
+      <div class="container">
+        <h2 data-ru="Программа фестиваля" data-en="Festival program"></h2>
+        <p class="lead" data-ru="Тематические дни помогут спланировать посещение и выбрать события, которые подходят именно вам." data-en="Curated theme days help you plan the visit and pick the experiences that suit you best."></p>
+        <div class="timeline">
+          <article>
+            <time datetime="2025-09-20">20.09</time>
+            <div class="details">
+              <h3 data-ru="День открытия" data-en="Opening day"></h3>
+              <p data-ru="Погружаемся в атмосферу Баварии: оркестр, коллаборационные релизы и обряд первого бочонка." data-en="Dive into Bavarian vibes with brass bands, collaboration releases and the ceremonial first keg tapping."></p>
+              <ul>
+                <li><span class="time">12:00</span><span data-ru="Торжественное открытие и парад пивоваров" data-en="Opening ceremony and brewers' parade"></span></li>
+                <li><span class="time">14:00</span><span data-ru="Экскурсия «Легенды тюменского пива»" data-en="Guided tour “Legends of Tyumen beer”"></span></li>
+                <li><span class="time">18:30</span><span data-ru="Живая музыка: Bavarian Brass Band" data-en="Live music: Bavarian Brass Band"></span></li>
+              </ul>
+            </div>
+          </article>
+          <article>
+            <time datetime="2025-09-27">27.09</time>
+            <div class="details">
+              <h3 data-ru="Образовательная суббота" data-en="Education Saturday"></h3>
+              <p data-ru="Профессионалы делятся опытом: от ферментации до устойчивого производства и маркетинга." data-en="Professionals share expertise from fermentation science to sustainable brewing and marketing."></p>
+              <ul>
+                <li><span class="time">11:30</span><span data-ru="Лекция профессора TU München о дрожжах" data-en="TU München lecture on yeast innovation"></span></li>
+                <li><span class="time">15:00</span><span data-ru="Панельная дискуссия о безалкогольном пиве" data-en="Panel talk on low &amp; no alcohol beers"></span></li>
+                <li><span class="time">17:45</span><span data-ru="Слепая дегустация с немецкими сомелье" data-en="Blind tasting with German sommeliers"></span></li>
+              </ul>
+            </div>
+          </article>
+          <article>
+            <time datetime="2025-10-04">04.10</time>
+            <div class="details">
+              <h3 data-ru="Финал и ярмарка" data-en="Finale &amp; fair"></h3>
+              <p data-ru="Закрывающий уикенд с ремесленными рынками, конкурсом домашних пивоваров и ночной вечеринкой." data-en="Closing weekend with craft market, homebrewers competition and late-night party."></p>
+              <ul>
+                <li><span class="time">13:00</span><span data-ru="Маркет локальных сыров и закусок" data-en="Local cheese &amp; snack market"></span></li>
+                <li><span class="time">16:00</span><span data-ru="Финал конкурса домашних пивоваров" data-en="Homebrewers cup finale"></span></li>
+                <li><span class="time">21:00</span><span data-ru="Afterparty с DJ из Берлина" data-en="Afterparty with Berlin DJ"></span></li>
+              </ul>
+            </div>
+          </article>
+        </div>
       </div>
     </section>
 
@@ -73,13 +152,14 @@
       <div class="container">
         <h2 data-ru="Галерея" data-en="Gallery"></h2>
         <div class="grid">
-          <img src="images/beer1.jpg" alt="Beer photo 1" class="reveal" />
-          <img src="images/beer2.jpg" alt="Beer photo 2" class="reveal" />
-          <img src="images/beer3.jpg" alt="Beer photo 3" class="reveal" />
-          <img src="images/hall.jpg" alt="Exhibition hall" class="reveal" />
+          <img src="https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="Пивные бокалы на дегустации" class="reveal" loading="lazy" decoding="async" />
+          <img src="https://images.unsplash.com/photo-1541558869434-2840d308329a?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="Посетители фестиваля поднимают бокалы" class="reveal" loading="lazy" decoding="async" />
+          <img src="https://images.unsplash.com/photo-1508057198894-247b23fe5ade?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="Коллекция бутылок немецкого пива" class="reveal" loading="lazy" decoding="async" />
+          <img src="https://images.unsplash.com/photo-1600180758890-6dca7d1fa29d?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="Бармен разливает крафтовое пиво" class="reveal" loading="lazy" decoding="async" />
         </div>
-        <p class="note" data-ru="* На сайте используются демонстрационные изображения."
-           data-en="* Demo placeholder images are used on the site."></p>
+        <p class="note">
+          <span data-ru="Фотографии предоставлены авторами Unsplash и Wikimedia Commons." data-en="Photography courtesy of Unsplash contributors and Wikimedia Commons."></span>
+        </p>
       </div>
 
       <!-- Simple lightbox modal -->
@@ -89,18 +169,98 @@
       </div>
     </section>
 
+    <!-- TICKETS -->
+    <section id="tickets" class="section tickets">
+      <div class="container">
+        <h2 data-ru="Билеты" data-en="Tickets"></h2>
+        <p class="lead" data-ru="Выберите подходящий формат участия и бронируйте заранее — количество мест ограничено." data-en="Choose the format that fits you and reserve early — availability is limited."></p>
+        <div class="ticket-grid">
+          <article class="ticket-card">
+            <span class="badge" data-ru="Лучший старт" data-en="Best for first-time"></span>
+            <h3 data-ru="Однодневный" data-en="Single day"></h3>
+            <p class="price">1 500 ₽</p>
+            <ul>
+              <li data-ru="Доступ в экспозицию в выбранный день" data-en="Exhibition access on selected day"></li>
+              <li data-ru="2 дегустационных сета" data-en="2 tasting sets"></li>
+              <li data-ru="Путеводитель фестиваля" data-en="Festival guidebook"></li>
+            </ul>
+            <a class="btn small" href="#contacts" data-ru="Забронировать" data-en="Reserve"></a>
+          </article>
+          <article class="ticket-card featured">
+            <span class="badge" data-ru="Популярно" data-en="Popular"></span>
+            <h3 data-ru="Weekend Pass" data-en="Weekend Pass"></h3>
+            <p class="price">3 900 ₽</p>
+            <ul>
+              <li data-ru="Вход на все события выходных" data-en="Access to all weekend events"></li>
+              <li data-ru="4 дегустационных сета + мастер-класс" data-en="4 tasting sets + masterclass"></li>
+              <li data-ru="Приоритетная зона lounge" data-en="Priority lounge access"></li>
+            </ul>
+            <a class="btn" href="#contacts" data-ru="Купить" data-en="Buy now"></a>
+          </article>
+          <article class="ticket-card">
+            <span class="badge" data-ru="Для профи" data-en="For pros"></span>
+            <h3 data-ru="Premium Industry" data-en="Premium Industry"></h3>
+            <p class="price">7 500 ₽</p>
+            <ul>
+              <li data-ru="Все дни + backstage сессии" data-en="All days + backstage sessions"></li>
+              <li data-ru="B2B lounge и встречи с пивоварами" data-en="B2B lounge &amp; brewer meetings"></li>
+              <li data-ru="Доступ к профессиональным материалам" data-en="Access to pro materials"></li>
+            </ul>
+            <a class="btn ghost small" href="#contacts" data-ru="Связаться" data-en="Contact us"></a>
+          </article>
+        </div>
+        <p class="note" data-ru="Групповые заявки и корпоративные пакеты доступны по запросу." data-en="Group and corporate packages are available on request."></p>
+      </div>
+    </section>
+
     <!-- PARTNERS -->
     <section id="partners" class="section partners">
       <div class="container">
-        <h2 data-ru="Организаторы и партнёры" data-en="Organizers & Partners"></h2>
+        <h2 data-ru="Организаторы и партнёры" data-en="Organizers &amp; partners"></h2>
         <div class="logos">
-          <img src="images/partners/partner1.png" alt="Partner 1">
-          <img src="images/partners/partner2.png" alt="Partner 2">
-          <img src="images/partners/partner3.png" alt="Partner 3">
-          <img src="images/partners/partner4.png" alt="Partner 4">
+          <figure>
+            <img src="images/partners/partner1.png" alt="Логотип Paulaner Brauerei" loading="lazy" decoding="async" />
+            <figcaption data-ru="Paulaner Brauerei" data-en="Paulaner Brauerei"></figcaption>
+          </figure>
+          <figure>
+            <img src="images/partners/partner2.png" alt="Логотип Erdinger Weissbräu" loading="lazy" decoding="async" />
+            <figcaption data-ru="Erdinger Weissbräu" data-en="Erdinger Weissbräu"></figcaption>
+          </figure>
+          <figure>
+            <img src="images/partners/partner3.png" alt="Логотип Bitburger" loading="lazy" decoding="async" />
+            <figcaption data-ru="Bitburger Braugruppe" data-en="Bitburger Braugruppe"></figcaption>
+          </figure>
+          <figure>
+            <img src="images/partners/partner4.png" alt="Логотип Немецкого союза пивоваров" loading="lazy" decoding="async" />
+            <figcaption data-ru="Deutscher Brauer-Bund" data-en="Deutscher Brauer-Bund"></figcaption>
+          </figure>
         </div>
-        <p data-ru="Хотите стать партнёром? Свяжитесь с нами для коллабораций и спонсорских пакетов."
-           data-en="Want to partner with us? Contact for collaborations and sponsorship packages."></p>
+        <p data-ru="Хотите стать партнёром? Свяжитесь с нами для коллабораций и спонсорских пакетов." data-en="Interested in partnering? Get in touch for collaborations and sponsorship packages."></p>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq" class="section faq">
+      <div class="container">
+        <h2 data-ru="Частые вопросы" data-en="Frequently asked questions"></h2>
+        <div class="faq-list">
+          <details>
+            <summary><span data-ru="Можно ли прийти с детьми?" data-en="Can I bring children?"></span></summary>
+            <p data-ru="Выставка открыта для гостей 18+. Детям вход разрешён только в сопровождении взрослых и без дегустаций." data-en="The exhibition welcomes guests aged 18+. Children can attend with adults but cannot take part in tastings."></p>
+          </details>
+          <details>
+            <summary><span data-ru="Есть ли безалкогольные варианты?" data-en="Are there alcohol-free options?"></span></summary>
+            <p data-ru="Да, несколько пивоварен представляют безалкогольные сорта и квас, а также предлагаются лимонады и кофе." data-en="Yes, several breweries showcase alcohol-free styles and kvass, plus artisan lemonades and coffee."></p>
+          </details>
+          <details>
+            <summary><span data-ru="Где оставить верхнюю одежду?" data-en="Is there a cloakroom?"></span></summary>
+            <p data-ru="На первом этаже работает гардероб и камера хранения. Для гостей Premium действует отдельная зона хранения." data-en="A staffed cloakroom and lockers are available on the first floor. Premium guests have a dedicated storage area."></p>
+          </details>
+          <details>
+            <summary><span data-ru="Будет ли трансфер от аэропорта?" data-en="Is airport transfer provided?"></span></summary>
+            <p data-ru="Да, уикенд-пакет включает групповой трансфер из аэропорта Рощино по расписанию. Индивидуальные поездки можно заказать через консьерж-сервис." data-en="Yes, the weekend pass includes scheduled group transfers from Roshchino airport. Private rides can be arranged via the concierge service."></p>
+          </details>
+        </div>
       </div>
     </section>
 
@@ -108,18 +268,46 @@
     <section id="contacts" class="section contacts">
       <div class="container">
         <h2 data-ru="Контакты" data-en="Contacts"></h2>
-        <div class="cards">
-          <div class="card">
-            <h3 data-ru="Место" data-en="Venue"></h3>
-            <p data-ru="Городской выставочный центр, Тюмень" data-en="City Exhibition Center, Tyumen"></p>
+        <div class="contact-grid">
+          <div class="info">
+            <div class="cards">
+              <div class="card">
+                <h3 data-ru="Место" data-en="Venue"></h3>
+                <p data-ru="Городской выставочный центр, Тюмень" data-en="City Exhibition Center, Tyumen"></p>
+              </div>
+              <div class="card">
+                <h3 data-ru="Даты" data-en="Dates"></h3>
+                <p data-ru="20 сентября — 5 октября 2025" data-en="September 20 — October 5, 2025"></p>
+              </div>
+              <div class="card">
+                <h3>Email</h3>
+                <p><a href="mailto:info@beerfest-tyumen.ru">info@beerfest-tyumen.ru</a></p>
+              </div>
+              <div class="card">
+                <h3 data-ru="Телефон" data-en="Phone"></h3>
+                <p><a href="tel:+73452990011">+7 (3452) 99-00-11</a></p>
+              </div>
+            </div>
+            <form class="contact-form" novalidate>
+              <h3 data-ru="Напишите нам" data-en="Write to us"></h3>
+              <label>
+                <span data-ru="Имя" data-en="Name"></span>
+                <input type="text" name="name" required data-ru-placeholder="Ваше имя" data-en-placeholder="Your name" />
+              </label>
+              <label>
+                <span data-ru="Email" data-en="Email"></span>
+                <input type="email" name="email" required data-ru-placeholder="example@mail.ru" data-en-placeholder="example@mail.com" />
+              </label>
+              <label>
+                <span data-ru="Сообщение" data-en="Message"></span>
+                <textarea name="message" rows="4" required data-ru-placeholder="Чем мы можем помочь?" data-en-placeholder="How can we help?"></textarea>
+              </label>
+              <button type="submit" class="btn" data-ru="Отправить" data-en="Send"></button>
+              <p class="form-status" aria-live="polite" data-ru-success="Спасибо! Мы свяжемся с вами в ближайшее время." data-en-success="Thank you! We'll get back to you soon." data-ru-error="Пожалуйста, заполните все поля." data-en-error="Please fill in all fields."></p>
+            </form>
           </div>
-          <div class="card">
-            <h3 data-ru="Даты" data-en="Dates"></h3>
-            <p data-ru="20 сентября — 5 октября 2025" data-en="September 20 — October 5, 2025"></p>
-          </div>
-          <div class="card">
-            <h3>Email</h3>
-            <p><a href="mailto:info@beerfest-tyumen.ru">info@beerfest-tyumen.ru</a></p>
+          <div class="map-wrapper">
+            <iframe title="City Exhibition Center Tyumen" src="https://www.openstreetmap.org/export/embed.html?bbox=65.535%2C57.147%2C65.545%2C57.151&amp;layer=mapnik&amp;marker=57.149%2C65.540" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
           </div>
         </div>
       </div>
@@ -128,8 +316,15 @@
 
   <footer class="footer">
     <div class="container">
-      <img src="images/logo.svg" alt="BeerFest Tyumen" class="footlogo"/>
-      <p data-ru="© 2025 Выставка немецкого пива · Тюмень" data-en="© 2025 German Beer Exhibition · Tyumen"></p>
+      <div class="footer-top">
+        <img src="images/logo.svg" alt="BeerFest Tyumen" class="footlogo" />
+        <p data-ru="© 2025 Выставка немецкого пива · Тюмень" data-en="© 2025 German Beer Exhibition · Tyumen"></p>
+      </div>
+      <ul class="social">
+        <li><a href="https://vk.com/beerfesttyumen" target="_blank" rel="noreferrer">VK</a></li>
+        <li><a href="https://t.me/beerfesttyumen" target="_blank" rel="noreferrer">Telegram</a></li>
+        <li><a href="https://instagram.com/beerfesttyumen" target="_blank" rel="noreferrer">Instagram</a></li>
+      </ul>
     </div>
   </footer>
 </body>
